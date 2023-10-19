@@ -15,13 +15,21 @@ def base():
 def home(path):
     return send_from_directory('client/public', path)
 
-
+# Path to connect to our database
 @app.route("/connect")
 def connect():
     connection = sqlite3.connect('StockTreeDB.db')
     c = connection.cursor()
     return "Successfully Connected!"
 
+# Path to fetch, i.e. SELECT
+@app.route("/fetch")
+def fetch():
+    connection = sqlite3.connect('StockTreeDB.db')
+    c = connection.cursor()
+
+    r = c.execute("SELECT * FROM STOCK")
+    return str(r.fetchall())
 
 if __name__ == "__main__":
     app.run(debug=True)
