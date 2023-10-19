@@ -1,12 +1,12 @@
 <script>
-  let rand = -1;
+  let text = "Not Connected"
 
-  function getRand() {
-    fetch("./rand")
+  function connect() {
+    fetch("./connect")
       .then(d => d.text())
-      .then(d => (rand = d));
+      .then(d => (text = d));
   }
 </script>
 
-<h1>Your number is {rand}!</h1>
-<button on:click={getRand}>Get a random number</button>
+<h1>{text}</h1>
+<button on:click={connect}>Connect</button>

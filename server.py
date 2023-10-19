@@ -1,7 +1,9 @@
 from flask import Flask, send_from_directory
-import random
+import sqlite3
 
 app = Flask(__name__)
+connection = 0
+c = 0
 
 # Path for our main Svelte page
 @app.route("/")
@@ -14,10 +16,11 @@ def home(path):
     return send_from_directory('client/public', path)
 
 
-@app.route("/rand")
-def hello():
-    print("here")
-    return str(random.randint(0, 100))
+@app.route("/connect")
+def connect():
+    connection = sqlite3.connect('StockTreeDB.db')
+    c = connection.cursor()
+    return "Successfully Connected!"
 
 
 if __name__ == "__main__":
