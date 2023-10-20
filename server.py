@@ -18,6 +18,7 @@ def home(path):
 # Path to connect to our database
 @app.route("/connect")
 def connect():
+    # connect to database
     connection = sqlite3.connect('StockTreeDB.db')
     c = connection.cursor()
     return "Successfully Connected!"
@@ -25,9 +26,10 @@ def connect():
 # Path to fetch, i.e. SELECT
 @app.route("/fetch")
 def fetch():
+    # connect to database
     connection = sqlite3.connect('StockTreeDB.db')
     c = connection.cursor()
-
+    # execute a function to select from the database
     r = c.execute("SELECT * FROM STOCK")
     return str(r.fetchall())
 

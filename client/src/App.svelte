@@ -15,7 +15,16 @@
   }
 </script>
 
-<h1>{text}</h1>
-<button on:click={connect}>Connect</button>
-<button on:click={getAllStocks}>GetAllStocks</button>
-<p>{allStocks}</p>
+<div id="login-center">
+  <form id="login-box">
+    <label for="username">Username: </label>
+    <input type="text" id="username" name="username"><br>
+    <label for="password">Password: </label>
+    <input type="password" id="pwd" name="pwd">
+  </form>
+  <button on:click={connect}>Connect</button>
+  <h3>{text}</h3>
+  <button on:click={getAllStocks}>GetAllStocks</button>
+  <p>{allStocks}</p>
+</div>
+

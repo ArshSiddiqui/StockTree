@@ -35,8 +35,17 @@ input, button, select, textarea {
 	padding: 0.4em;
 	margin: 0 0 0.5em 0;
 	box-sizing: border-box;
-	border: 1px solid #ccc;
+	border: 1px solid #213a1b ;
 	border-radius: 2px;
+}
+
+button {
+	border-radius: 12px !important;
+	background-color: #0f1a0c !important;
+	color: #ffffff !important;
+	font-family: 'Hind Siliguri';
+	width: 200px;
+	
 }
 
 input:disabled {
@@ -59,4 +68,25 @@ button:active {
 
 button:focus {
 	border-color: #666;
+}
+
+#title {
+	color: #213a1b;
+	text-decoration: underline #213a1b;
+	text-align: center;
+	font-family: 'Oswald';
+	font-size: 50px;
+}
+
+#login-center {
+	display: flex;
+	align-items: center;
+	flex-direction: column;
+	justify-content: center;
+}
+
+#login-box {
+	font-family: 'Hind Siliguri';
+	font-size: large;
+	margin-bottom: 1rem;
 }
