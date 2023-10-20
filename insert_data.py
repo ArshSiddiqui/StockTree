@@ -121,59 +121,75 @@ sh_bank_ac = [1234567890, 2345678765, 2345432, 234567, 9876543, 34567, 987654323
 
 # STOCK INFORMATION INSERT
 
-s_URLs = ["https://finance.yahoo.com/quote/AAPL?p=AAPL&.tsrc=fin-srch","https://finance.yahoo.com/quote/MSFT?p=MSFT&.tsrc=fin-srch",
-        "https://finance.yahoo.com/quote/JPM?p=JPM&.tsrc=fin-srch","https://finance.yahoo.com/quote/GOOGL?p=GOOGL&.tsrc=fin-srch",
-        "https://finance.yahoo.com/quote/1398.HK?p=1398.HK&.tsrc=fin-srch","https://finance.yahoo.com/quote/AMAT?p=AMAT&.tsrc=fin-srch"
-        "https://finance.yahoo.com/quote/0939.HK?p=0939.HK&.tsrc=fin-srch","https://finance.yahoo.com/quote/T?p=T&.tsrc=fin-srch"
-        "https://finance.yahoo.com/quote/BAC?p=BAC&.tsrc=fin-srch", "https://finance.yahoo.com/quote/LUV?p=LUV&.tsrc=fin-srch",
-        "https://finance.yahoo.com/quote/SHEL?p=SHEL&.tsrc=fin-srch","https://finance.yahoo.com/quote/3988.HK?p=3988.HK&.tsrc=fin-srch",
-        "https://finance.yahoo.com/quote/TM?p=TM&.tsrc=fin-srch","https://finance.yahoo.com/quote/LRCX?p=LRCX&ncid=yahooproperties_peoplealso_km0o32z3jzm",
-        "https://finance.yahoo.com/quote/UNH?p=UNH&.tsrc=fin-srch","https://finance.yahoo.com/quote/ADI?p=ADI&ncid=yahooproperties_peoplealso_km0o32z3jzm",
-        "https://finance.yahoo.com/quote/WFC?p=WFC&.tsrc=fin-srch","https://finance.yahoo.com/quote/CVX?p=CVX&.tsrc=fin-srch",
-        "https://finance.yahoo.com/quote/HSBC?p=HSBC&.tsrc=fin-srch","https://finance.yahoo.com/quote/NFLX?p=NFLX&.tsrc=fin-srch",
-        "https://finance.yahoo.com/quote/DB?p=DB&ncid=yahooproperties_peoplealso_km0o32z3jzm","https://finance.yahoo.com/quote/UBS?p=UBS&ncid=yahooproperties_peoplealso_km0o32z3jzm"]
+# s_URLs = ["https://finance.yahoo.com/quote/AAPL?p=AAPL&.tsrc=fin-srch","https://finance.yahoo.com/quote/MSFT?p=MSFT&.tsrc=fin-srch",
+#         "https://finance.yahoo.com/quote/JPM?p=JPM&.tsrc=fin-srch","https://finance.yahoo.com/quote/GOOGL?p=GOOGL&.tsrc=fin-srch",
+#         "https://finance.yahoo.com/quote/1398.HK?p=1398.HK&.tsrc=fin-srch","https://finance.yahoo.com/quote/AMAT?p=AMAT&.tsrc=fin-srch"
+#         "https://finance.yahoo.com/quote/0939.HK?p=0939.HK&.tsrc=fin-srch","https://finance.yahoo.com/quote/T?p=T&.tsrc=fin-srch"
+#         "https://finance.yahoo.com/quote/BAC?p=BAC&.tsrc=fin-srch", "https://finance.yahoo.com/quote/LUV?p=LUV&.tsrc=fin-srch",
+#         "https://finance.yahoo.com/quote/SHEL?p=SHEL&.tsrc=fin-srch","https://finance.yahoo.com/quote/3988.HK?p=3988.HK&.tsrc=fin-srch",
+#         "https://finance.yahoo.com/quote/TM?p=TM&.tsrc=fin-srch","https://finance.yahoo.com/quote/LRCX?p=LRCX&ncid=yahooproperties_peoplealso_km0o32z3jzm",
+#         "https://finance.yahoo.com/quote/UNH?p=UNH&.tsrc=fin-srch","https://finance.yahoo.com/quote/ADI?p=ADI&ncid=yahooproperties_peoplealso_km0o32z3jzm",
+#         "https://finance.yahoo.com/quote/WFC?p=WFC&.tsrc=fin-srch","https://finance.yahoo.com/quote/CVX?p=CVX&.tsrc=fin-srch",
+#         "https://finance.yahoo.com/quote/HSBC?p=HSBC&.tsrc=fin-srch","https://finance.yahoo.com/quote/NFLX?p=NFLX&.tsrc=fin-srch",
+#         "https://finance.yahoo.com/quote/DB?p=DB&ncid=yahooproperties_peoplealso_km0o32z3jzm","https://finance.yahoo.com/quote/UBS?p=UBS&ncid=yahooproperties_peoplealso_km0o32z3jzm"]
+# 
+# s_cname = []
+# s_name = []
+# s_mkt = []
+# s_price = []
+# s_open = []
+# s_ask = []
+# s_day_range = []
+# s_volume = []
+# s_volume = []
+# s_bid = []
+# 
+# for i in range(0, len(s_URLs)):
+#     s_page = requests.get(s_URLs[i])
+#     s_soup = BeautifulSoup(s_page.content, "html.parser")
+#     s_head = s_soup.find("h1").text
+#     print(s_head)
+#     s_cname.append(s_head.split(" (")[0])
+#     s_name.append(s_head.split(" (")[1].split(")")[0])
+#     s_mkt.append(s_soup.find(id="Lead-5-QuoteHeader-Proxy").find("span").text.split(" - ")[0])
+#     s_price.append(float(s_soup.find(id="Lead-5-QuoteHeader-Proxy").find("fin-streamer").text.replace(",","")))
+#     s_left_table = s_soup.find(id="quote-summary")
+#     s_left_table_rows = s_left_table.find_all("tr") 
+#     for r in s_left_table_rows:
+#         col = r.find_all("td")
+#         col = [t.text.strip() for t in col]
+#         if (col[0] == "Open"):
+#             s_open.append(float(col[1].replace(",","")))
+#         elif (col[0] == "Ask"):
+#             s_ask.append(col[1])
+#         elif (col[0] == "Day's Range"):
+#             s_day_range.append(col[1])
+#         elif (col[0] == "Volume"):
+#             s_volume.append(int(col[1].replace(",","")))
+#         elif (col[0] == "Bid"):
+#             s_bid.append(col[1])
+# 
+# for i in range(0, len(s_bid)):
+#     print(s_name[i])
+#     c.execute(f"INSERT INTO STOCK VALUES ('{s_name[i]}', {s_price[i]}, {s_open[i]}, '{s_ask[i]}', '{s_day_range[i]}', {s_volume[i]}, '{s_cname[i]}', '{s_bid[i]}', '{'X'+s_mkt[i]}')"
 
-s_cname = []
-s_name = []
-s_mkt = []
-s_price = []
-s_open = []
-s_ask = []
-s_day_range = []
-s_volume = []
-s_volume = []
-s_bid = []
 
-for i in range(0, len(s_URLs)):
-    s_page = requests.get(s_URLs[i])
-    s_soup = BeautifulSoup(s_page.content, "html.parser")
-    s_head = s_soup.find("h1").text
-    print(s_head)
-    s_cname.append(s_head.split(" (")[0])
-    s_name.append(s_head.split(" (")[1].split(")")[0])
-    s_mkt.append(s_soup.find(id="Lead-5-QuoteHeader-Proxy").find("span").text.split(" - ")[0])
-    s_price.append(float(s_soup.find(id="Lead-5-QuoteHeader-Proxy").find("fin-streamer").text.replace(",","")))
-    s_left_table = s_soup.find(id="quote-summary")
-    s_left_table_rows = s_left_table.find_all("tr") 
-    for r in s_left_table_rows:
-        col = r.find_all("td")
-        col = [t.text.strip() for t in col]
-        if (col[0] == "Open"):
-            s_open.append(float(col[1].replace(",","")))
-        elif (col[0] == "Ask"):
-            s_ask.append(col[1])
-        elif (col[0] == "Day's Range"):
-            s_day_range.append(col[1])
-        elif (col[0] == "Volume"):
-            s_volume.append(int(col[1].replace(",","")))
-        elif (col[0] == "Bid"):
-            s_bid.append(col[1])
+# INSERT INTO OPERATES_IN
 
-for i in range(0, len(s_bid)):
-    print(s_name[i])
-    c.execute(f"INSERT INTO STOCK VALUES ('{s_name[i]}', {s_price[i]}, {s_open[i]}, '{s_ask[i]}', '{s_day_range[i]}', {s_volume[i]}, '{s_cname[i]}', '{s_bid[i]}', '{'X'+s_mkt[i]}')")
+oi_company = ["'JPMorgan Chase'", "'Saudi Aramco'", "'Industrial and Commercial Bank of China'", "'China Construction Bank'", "'Agricultural Bank of China'", "'Bank of America'", "'ExxonMobil'", "'Shell'", "'Bank of China'", "'Toyoto Motor'", "'Samsung Electronics'", "'UnitedHealth Group'", "'Ping An Insurance Group'", "'Wells Fargo'", "'Chevron'", "'Petro China'", "'HSBC Holdings'"]
+oi_country = ["United States of America","Saudi Arabia","China","China","China","United States of America", "United States of America", "United States of America", "China", "Japan", "South Korea", "United States of America", "China", "United States of America", "United States of America","China","The United Kingdom"]
+
+# for i in range(0, len(oi_company)):
+    # print(oi_company[i])
+    # c.execute(f"INSERT INTO OPERATES_IN VALUES ('{oi_country[i]}', {oi_company[i]})")
+
+owns_sname = ["AAPL", "MSFT","GOOGL","AMAT","UBS","DB","NFLX","UNH","TM","TM","LUV","LUV","LUV","LUV","T","LRCX","TM","SHEL","1398.HK","GOOGL"]
+owns_id = [8,8,8,8,8,8,8,8,9,10,11,12,13,14,15,16,17,18,19,20]
+owns_amt_share = [2, 2, 2, 2, 2, 2, 2, 2, 1, 4, 67, 9, 3, 1, 4, 56, 12, 65, 47, 1]
+owns_fmarket = ["XNAS","XNAS","XNAS","XNAS","XNYS","XNYS","XNAS","XNYS","XNYS","XNYS","XNYS","XNYS","XNYS","XNYS","XNYS","XNAS","XNYS","XNYS","XNYS","XNAS"]
+
+for i in range(0, len(owns_amt_share)):
+    print(owns_sname[i])
+    c.execute(f"INSERT INTO OWNS VALUES ('{owns_sname[i]}', {owns_id[i]}, {owns_amt_share[i]}, '{owns_fmarket[i]}')")
 
 connection.commit()
-
-
-
