@@ -25,11 +25,13 @@ def login():
     # load data from request
     data =  json.loads(request.get_data())
     # fetch password from database
-    r = c.execute(f"SELECT Password FROM ACCOUNTS WHERE Username='{data['username']}'")
-    fetched_password = r.fetchone()
-    print(data['password'] == fetched_password[0])
+    r = c.execute(f"SELECT * FROM ACCOUNTS WHERE Username='{data['username']}'")
+    fetched_data = r.fetchone()
+    fetched_password = fetched_data[1]
+    user_type = fetched_data[2]
     return {
-        "valid_password": data['password'] == fetched_password[0],
+        "valid_password": data['password'] == fetched_password,
+        "user_type": user_type
     }
 
 # Path to fetch, i.e. SELECT
