@@ -6,8 +6,16 @@
     // $: alterego = username === "" ? "": "evil " + username;
     let password = "";
 
-    function login() {
-       logged_in = true;
+    async function login() {
+      let response = await fetch("/login", {
+        method: "POST",
+        body: JSON.stringify({
+          "username": username,
+          "password": password,
+        })
+      })
+      let data = await response.json();
+      console.log("data:", data)
     }
 </script>
 

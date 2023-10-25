@@ -1,5 +1,6 @@
-from flask import Flask, send_from_directory
+from flask import Flask, send_from_directory, request
 import sqlite3
+import json
 
 app = Flask(__name__)
 connection = 0
@@ -16,12 +17,20 @@ def home(path):
     return send_from_directory('client/public', path)
 
 # Path to connect to our database
-@app.route("/connect")
-def connect():
-    # connect to database
+@app.route("/login", methods=['POST'])
+def login():
+    # login to a database
     connection = sqlite3.connect('StockTreeDB.db')
     c = connection.cursor()
-    return "Successfully Connected!"
+    # load data from request
+    data =  json.loads(request.get_data())
+    # fetch password from database
+    r = c.execute(f"SELECT Password FROM ACCOUNTS WHERE Username='{data['username']}'")
+    fetched_password = r.fetchone()
+    print(data['password'] == fetched_password[0])
+    return {
+        "valid_password": data['password'] == fetched_password[0],
+    }
 
 # Path to fetch, i.e. SELECT
 @app.route("/fetch")
