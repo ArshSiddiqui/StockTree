@@ -78,12 +78,6 @@ button:focus {
 	font-size: 50px;
 }
 
-#login-center {
-	display: flex;
-	align-items: center;
-	flex-direction: column;
-	justify-content: center;
-}
 
 #login-box {
 	font-family: 'Hind Siliguri';
