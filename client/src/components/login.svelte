@@ -1,8 +1,10 @@
 <script>
     import StockholderView from "./stockholder_view.svelte";
     import CompanyView from "./company_view.svelte";
+    import SignupView from "./signup_view.svelte";
 
     let logged_in = false;
+    let signup_in = false;
     let user_type = "";
     let username = "";
     // $: alterego = username === "" ? "": "evil " + username;
@@ -20,6 +22,12 @@
       logged_in = data["valid_password"];
       user_type = data["user_type"];
     }
+
+    function signup() {
+      signup_in = true;
+      logged_in = true;
+      console.log(signup_in)
+    }
 </script>
 
 {#if logged_in == false}
@@ -31,11 +39,14 @@
         <input bind:value={password} type="password" id="pwd" name="pwd">
       </form>
       <button on:click={login}>Login</button>
+      <button on:click={signup}>Sign up</button>
     </div>
 {:else if logged_in == true && user_type == "Stockholder"}
     <svelte:component this={StockholderView}></svelte:component>
 {:else if logged_in == true && user_type == "Company"}
     <svelte:component this={CompanyView}></svelte:component>
+{:else if signup_in == true}
+    <svelte:component this={SignupView}></svelte:component>
 {/if}
 
 <!-- Your input username is {username}. -->
