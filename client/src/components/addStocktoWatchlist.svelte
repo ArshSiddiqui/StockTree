@@ -1,5 +1,5 @@
 <script>
-    import StockView from "./stock_view.svelte";
+    // import StockView from "./stock_view.svelte";
     //Stockholder would like to add stock to watchlist
     let newStockName = '';
     let newStockSymbol = '';
