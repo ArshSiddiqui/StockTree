@@ -34,6 +34,34 @@ def login():
         "user_type": user_type
     }
 
+# Path to connect to our database
+@app.route("/deleteStock", methods=['POST'])
+def deleteStock():
+    # Connect to database
+    connection = sqlite3.connect('StockTreeDB.db')
+    c = connection.cursor()
+    # load data from request
+    data =  json.loads(request.get_data())
+    # check if stock exists
+    r = c.execute(f"SELECT Name FROM STOCK WHERE Name='{data['stockName']}'")
+    fetched_data = r.fetchone()
+    fetched_stock = fetched_data[1]
+    if fetched_stock is None:
+        return {
+            "is_deleted": false
+        }
+    else:
+        try:
+            c.execute(f"DELETE from STOCK WHERE Name='{data['stockName']}'")
+            return {
+                "is_deleted": "true"
+            }
+        except:
+            print("An error occured when trying to delete")
+            return {
+            "is_deleted": "false"
+            }
+
 # Path to fetch, i.e. SELECT
 @app.route("/fetch")
 def fetch():
