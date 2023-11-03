@@ -59,7 +59,7 @@ def deleteStock():
         except:
             print("An error occured when trying to delete")
             return {
-            "is_deleted": "false:
+            "is_deleted": "false"
             }
 
 # Path to fetch, i.e. SELECT
