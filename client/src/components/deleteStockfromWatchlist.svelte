@@ -1,17 +1,18 @@
 <script>
-    $: allStocks = fetch("./fetch")
+    $: allStocks = fetch("./fetchName")
       .then(d => d.text())
       .then(d => allStocks = d);
     $: console.log(allStocks);
     let stockName = "";
-    function deleteStockClient() {
-        let stockJson = JSON.stringify({name: stockName});
-        fetch('/deleteStock', {
+    async function deleteStockClient() {
+        await fetch('/deleteStock', {
             method: 'POST',
             headers: {
             'Content-Type': 'application/json',
             },
-        body: stockJson,
+            body: JSON.stringify({
+            "stockName": stockName,
+            })
       })
       .then((response) => response.json())
         .then((data) => {
@@ -31,6 +32,6 @@
     <form on:submit={deleteStockClient}>
         <label for="stockName">Stock to delete:</label>
         <input id="stockName" bind:value={stockName}>
-        <button type="submit"/> 
+        <input type="submit" value="Submit"/> 
     </form>
 </div>

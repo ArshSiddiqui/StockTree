@@ -1,7 +1,6 @@
 Stockholder View
 
 <script>
-    import Login from "./login.svelte";
     import AddStocktoWatchlist from "./addStocktoWatchlist.svelte";
     import DeleteStockfromWatchlist from "./deleteStockfromWatchlist.svelte";
 </script>

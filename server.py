@@ -44,20 +44,24 @@ def deleteStock():
     data =  json.loads(request.get_data())
     # check if stock exists
     r = c.execute(f"SELECT Name FROM STOCK WHERE Name='{data['stockName']}'")
-    fetched_data = r.fetchone()
-    fetched_stock = fetched_data[1]
+    fetched_stock = r.fetchone()
     if fetched_stock is None:
+        print("None")
         return {
             "is_deleted": false
         }
     else:
         try:
             c.execute(f"DELETE from STOCK WHERE Name='{data['stockName']}'")
+            print("deleted", data['stockName'])
+            connection.commit()
+            connection.close()
             return {
                 "is_deleted": "true"
             }
         except:
             print("An error occured when trying to delete")
+            connection.close()
             return {
             "is_deleted": "false"
             }
@@ -70,6 +74,16 @@ def fetch():
     c = connection.cursor()
     # execute a function to select from the database
     r = c.execute("SELECT * FROM STOCK")
+    return str(r.fetchall())
+
+# Path to fetch, i.e. SELECT
+@app.route("/fetchName")
+def fetchName():
+    # connect to database
+    connection = sqlite3.connect('StockTreeDB.db')
+    c = connection.cursor()
+    # execute a function to select from the database
+    r = c.execute("SELECT Name FROM STOCK")
     return str(r.fetchall())
 
 if __name__ == "__main__":

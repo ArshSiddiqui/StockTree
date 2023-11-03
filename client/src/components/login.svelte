@@ -36,7 +36,7 @@
         <label for="username">Username: </label>
         <input bind:value={username} type="text" id="username" name="username"><br>
         <label for="password">Password: </label>
-        <input bind:value={password} type="password" id="pwd" name="pwd">
+        <input bind:value={password} type="password" id="password" name="pwd">
       </form>
       <button on:click={login}>Login</button>
       <button on:click={signup}>Sign up</button>
