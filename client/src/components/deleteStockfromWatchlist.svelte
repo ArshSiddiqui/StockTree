@@ -3,6 +3,7 @@
       .then(d => d.text())
       .then(d => allStocks = d);
     $: console.log(allStocks);
+    let stockName = "";
     function deleteStockClient() {
         let stockJson = JSON.stringify({name: stockName});
         fetch('/deleteStock', {
