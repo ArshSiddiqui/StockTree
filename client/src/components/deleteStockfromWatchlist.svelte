@@ -1,5 +1,4 @@
 <script>
-    import StockView from "./stock_view.svelte";
     $: allStocks = fetch("./fetch")
       .then(d => d.text())
       .then(d => allStocks = d);
