@@ -86,9 +86,30 @@ button:focus {
 	margin-bottom: 1rem;
 }
 
-div {
+#login-center {
 	display: flex;
 	align-items: center;
 	flex-direction: column;
 	justify-content: center;
+}
+
+#company-header {
+    margin-left: 10rem;
+}
+
+h2 {
+	color: #213a1b;
+	text-decoration: underline #213a1b;
+	font-family: 'Hind Siligure';
+	font-size: 30px;
+}
+
+#company-details {
+	display: flex;
+	align-items: center;
+	flex-direction: row;
+}
+
+#company-details > * + * {
+	margin-left: 5rem;
 }
