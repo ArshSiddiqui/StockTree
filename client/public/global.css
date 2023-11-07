@@ -123,3 +123,9 @@ table {
 th, td {
 	padding: 15px;
 }
+
+#logout-div {
+	position: absolute;
+	top: 2rem;
+	right: 3rem;
+}
