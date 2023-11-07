@@ -133,6 +133,22 @@ def add_user():
         "success": "1"
     }
 
+# change password 
+@app.route("/changePassword", methods=['POST'])
+def change_password():
+    # connect to the database
+    connection = sqlite3.connect('StockTreeDB.db')
+    c = connection.cursor()
+    # get data from json request
+    data =  json.loads(request.get_data())
+    # add user to the database
+    c.execute(f"UPDATE ACCOUNTS SET Password='{data['password']}' WHERE Username='{data['username']}'")
+    connection.commit()
+    return {
+        "success": "1"
+    }
+
+
 
 # Path to fetch, i.e. SELECT
 @app.route("/fetch")

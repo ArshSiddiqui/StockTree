@@ -45,11 +45,11 @@
       <!-- <svelte:component this={IndividualStock}></svelte:component> -->
     </div>
 {:else if logged_in == true && user_type == "Stockholder"}
-    <svelte:component this={StockholderView}></svelte:component>
+    <svelte:component this={StockholderView} username={username}></svelte:component>
 {:else if logged_in == true && user_type == "Company"}
     <svelte:component this={CompanyView} companyName={username}></svelte:component>
 {:else if logged_in == true && user_type == "Admin"}
-    <svelte:component this={AdminView}></svelte:component>
+    <svelte:component this={AdminView} username={username}></svelte:component>
 {:else if signup_in == true}
     <svelte:component this={SignupView}></svelte:component>
 {/if}
