@@ -2,6 +2,7 @@
     import StockholderView from "./stockholder_view.svelte";
     import CompanyView from "./company_view.svelte";
     import SignupView from "./signup_view.svelte";
+    import AdminView from "./admin_view.svelte";
     // import IndividualStock from "./individual_stock.svelte";
 
     let logged_in = false;
@@ -47,6 +48,8 @@
     <svelte:component this={StockholderView}></svelte:component>
 {:else if logged_in == true && user_type == "Company"}
     <svelte:component this={CompanyView} companyName={username}></svelte:component>
+{:else if logged_in == true && user_type == "Admin"}
+    <svelte:component this={AdminView}></svelte:component>
 {:else if signup_in == true}
     <svelte:component this={SignupView}></svelte:component>
 {/if}
