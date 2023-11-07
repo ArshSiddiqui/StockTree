@@ -4,9 +4,25 @@
     let username = "";
     let password = "";
     let login_created = false;
+    let user_type = "";
 
-    function submit() {
-       login_created = true; 
+    async function submit() {
+      if (user_type == "") {
+        return;
+      } else {
+        let response = await fetch("/addUser", {
+          method: "POST",
+          body: JSON.stringify({
+            "username": username,
+            "password": password,
+            "account_type": user_type,
+          })
+        })
+        let data = await response.json();
+        if (data["success"] == 1) {
+          login_created = true;
+        }
+      }
     }
 </script>
 
@@ -19,7 +35,7 @@
           <label for="password">Password: </label>
           <input bind:value={password} type="password" id="pwd" name="pwd">
           <label for="type">Type:</label>
-          <select for="type">
+          <select bind:value={user_type} for="type">
             <option value="stockholder">Stockholder</option>
             <option value="company">Company</option>
           </select>

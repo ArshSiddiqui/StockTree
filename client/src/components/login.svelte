@@ -2,7 +2,7 @@
     import StockholderView from "./stockholder_view.svelte";
     import CompanyView from "./company_view.svelte";
     import SignupView from "./signup_view.svelte";
-    import IndividualStock from "./individual_stock.svelte";
+    // import IndividualStock from "./individual_stock.svelte";
 
     let logged_in = false;
     let signup_in = false;
@@ -41,7 +41,7 @@
       </form>
       <button on:click={login}>Login</button>
       <button on:click={signup}>Sign up</button>
-      <svelte:component this={IndividualStock}></svelte:component>
+      <!-- <svelte:component this={IndividualStock}></svelte:component> -->
     </div>
 {:else if logged_in == true && user_type == "Stockholder"}
     <svelte:component this={StockholderView}></svelte:component>

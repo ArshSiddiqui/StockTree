@@ -113,3 +113,13 @@ h2 {
 #company-details > * + * {
 	margin-left: 5rem;
 }
+
+table {
+	border-collapse: collapse;
+	margin: 2rem auto;
+	font-size: 1em;
+}
+
+th, td {
+	padding: 15px;
+}
