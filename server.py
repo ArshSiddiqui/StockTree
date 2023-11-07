@@ -115,7 +115,23 @@ def update_investment(sh_bank_ac, sh_amt_invested):
 
 # def update_financial_markets():
     
-    
+
+# SIGNUP VIEW FUNCTIONALITY
+
+# add a user to the database
+@app.route("/addUser", methods=['POST'])
+def add_user():
+    # connect to the database
+    connection = sqlite3.connect('StockTreeDB.db')
+    c = connection.cursor()
+    # get data from json request
+    data =  json.loads(request.get_data())
+    # add user to the database
+    c.execute(f"INSERT INTO ACCOUNTS VALUES ('{data['username']}','{data['password']}','{data['account_type']}')")
+    connection.commit()
+    return {
+        "success": "1"
+    }
 
 
 # Path to fetch, i.e. SELECT
