@@ -2,7 +2,7 @@
     // import StockView from "./stock_view.svelte";
     //Stockholder would like to add stock to watchlist
     let newStockName = '';
-    let newStockSymbol = '';
+    let newStockPrice = '';
   
     function handleSubmit() {
       // Perform validation and submit the new stock data to the server
@@ -38,8 +38,8 @@
       <label for="newStockName">Stock Name:</label>
       <input type="text" id="newStockName" bind:value={newStockName} required />
   
-      <label for="newStockSymbol">Stock Symbol:</label>
-      <input type="text" id="newStockSymbol" bind:value={newStockSymbol} required />
+      <label for="newStockPrice">Stock Price:</label>
+      <input type="text" id="newStockPrice" bind:value={newStockPrice} required />
   
       <button type="submit">Submit</button>
     </form>
