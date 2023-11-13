@@ -1,6 +1,7 @@
 <script>
     import Login from "./login.svelte";
     import IndividualStock from "./individual_stock.svelte";
+    import IndividualCountry from "./individual_country.svelte";
 
     export let companyName = "company-name";
 
@@ -34,6 +35,16 @@
     let comp_full_name = "name";
     let competitor_financial_market = "financial-market";
     let competitor_bid = "bid";
+
+    // Country details
+    let display_country = false;
+    let country_name = "";
+    let country_full_name = "name";
+    let unemployment_rate = 0;
+    let gdp = 0;
+    let inflation_rate = 0;
+    let population = 0;
+
 
 
     function logout() {logged_in = false;}
@@ -100,6 +111,26 @@
         display_competitor = true;
     }
 
+    function close_competitor_view(){display_competitor=false;}
+
+    async function get_country_details() {
+        let response = await fetch("/getCountryDetails", {
+            method: "POST",
+            body: JSON.stringify({
+                "country_name": country_name,
+            })
+        })
+        let data = await response.json();
+        country_full_name = data['name'];
+        unemployment_rate = data['unemployment_rate'];
+        gdp = data['gdp'];
+        inflation_rate = data['inflation_rate'];
+        population = data['population'];
+        display_country = true;
+    }
+
+    function close_country_view(){display_country=false;}
+
     get_company_details();
     get_stock();
 </script>
@@ -134,6 +165,7 @@
         <button on:click={get_competitor_details}>Get Details</button>
     </div>
     {#if display_competitor}
+        <button on:click={close_competitor_view}>Close Competitor View</button>
         <svelte:component this={IndividualStock} name={competitor_name} price={competitor_price} open={competitor_open} 
                                                 ask={competitor_ask} day_range={competitor_day_range}
                                                 volume={competitor_volume} company_name={comp_full_name}
@@ -142,6 +174,23 @@
 
     {/if}
 
+    <h3>View Country Economic Trends</h3>
+    <div id="country-view">
+        <form id="view-company-details">
+            <label for="country-name">Country name: </label>
+            <input bind:value={country_name} type="country_name">
+        </form>
+        <button on:click={get_country_details}>Get Economic Trends</button>
+    </div>
+    {#if display_country}
+        <button on:click={close_country_view}>Close Country View</button>
+        <svelte:component this={IndividualCountry} name={country_full_name} unemployment_rate={unemployment_rate}
+                                                    gdp={gdp} inflation_rate={inflation_rate}
+                                                    population={population}></svelte:component>
+    {/if}
+
+
+    <h3>Change Company Account Details:</h3>
     <div id="change-password">
         <form id="change-password-box">
           <label for="password">Change Password: </label>

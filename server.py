@@ -232,6 +232,27 @@ def get_stock():
         "bid": bid,
         "fmarket": fmarket,
     }
+
+# get country details
+@app.route("/getCountryDetails", methods=['POST'])
+def get_country_details():
+    # connect to the database
+    connection = sqlite3.connect('StockTreeDB.db')
+    c = connection.cursor()
+    # get data from json request
+    data = json.loads(request.get_data())
+    r = c.execute(f"SELECT * FROM COUNTRY WHERE Name='{data['country_name']}'")
+    res = r.fetchall()[0]
+    # extract all data
+    unemployment, gdp, name, inflation, population = res
+    return {
+        "unemployment_rate": unemployment,
+        "gdp": gdp,
+        "name": name,
+        "inflation_rate": inflation,
+        "population": population,
+    }
+
     
 
 # Path to fetch, i.e. SELECT
