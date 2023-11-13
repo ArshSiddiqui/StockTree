@@ -149,6 +149,12 @@ def change_password():
     }
 
 
+# COMPANY VIEW FUNCTIONALITY
+
+# get stock details
+@app.route("/getStock", methods=['GET'])
+def get_stock():
+    return 1
 
 # Path to fetch, i.e. SELECT
 @app.route("/fetch")

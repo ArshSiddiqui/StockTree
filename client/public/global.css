@@ -115,13 +115,15 @@ h2 {
 }
 
 table {
-	border-collapse: collapse;
+	/* border-collapse: collapse; */
 	margin: 2rem auto;
 	font-size: 1em;
+	border: 1px solid #000000;
 }
 
 th, td {
 	padding: 15px;
+	border: 1px solid #000000;
 }
 
 #logout-div {

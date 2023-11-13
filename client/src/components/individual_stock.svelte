@@ -1,20 +1,19 @@
 <script>
     // Stock Details
-    let name = "stock-name";
-    let price = "price";
-    let open = "open";
-    let ask = "ask";
-    let day_range = "day-range";
-    let volume = "volume";
-    let company_name = "company-name";
-    let financial_market = "financial-market";
+    export let name = "stock-name";
+    export let price = "price";
+    export let open = "open";
+    export let ask = "ask";
+    export let day_range = "day-range";
+    export let volume = "volume";
+    export let company_name = "company-name";
+    export let financial_market = "financial-market";
 </script>
 
 <div id="stock_details">
     <table>
         <thead>
             <tr>
-                <th></th>
                 <th>{name}</th>
                 <th>{company_name}</th>
                 <th colspan="2">{financial_market}</th>
@@ -26,14 +25,17 @@
                 <th>{price}</th>
                 <th>Open</th>
                 <th>{open}</th>
-                <th>Ask</th>
-                <th>{ask}</th>
             </tr>
             <tr>
+                <th>Ask</th>
+                <th>{ask}</th>
                 <th>Day Range</th>
                 <th>{day_range}</th>
+            </tr>
+            <tr>
                 <th>Volume</th>
                 <th>{volume}</th>
+
             </tr>
         </tbody>
     </table> 
