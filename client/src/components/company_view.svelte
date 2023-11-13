@@ -22,6 +22,19 @@
     let financial_market = "financial-market";
     let bid = "bid";
 
+    // Competitor Details
+    let display_competitor = false;
+    let competitor_name = "name";
+    let competitor_price = "price";
+    let competitor_open = "open";
+    let competitor_ask = "ask";
+    let competitor_day_range = "day-range";
+    let competitor_volume = "volume";
+    let competitor_company_name = "";
+    let comp_full_name = "name";
+    let competitor_financial_market = "financial-market";
+    let competitor_bid = "bid";
+
 
     function logout() {logged_in = false;}
     async function change_password() {
@@ -67,6 +80,26 @@
         abbreviation = data['abbreviation'];
     }
 
+    async function get_competitor_details() {
+        let response = await fetch("/getStock", {
+            method: "POST",
+            body: JSON.stringify({
+                "company_name": competitor_company_name,
+            })
+        })
+        let data = await response.json();
+        competitor_name = data['abbreviation'];
+        competitor_price = data['price'];
+        competitor_open = data['open'];
+        competitor_ask = data['ask'];
+        competitor_day_range = data['day_range'];
+        competitor_volume = data['volume'];
+        comp_full_name = data['cname'];
+        competitor_bid = data['bid'];
+        competitor_financial_market = data['fmarket'];
+        display_competitor = true;
+    }
+
     get_company_details();
     get_stock();
 </script>
@@ -90,6 +123,24 @@
                                                 volume={volume} company_name={company_name}
                                                 financial_market={financial_market} bid={bid}>
                                             </svelte:component>
+
+    
+    <h3>View Competitor Details</h3>
+    <div id="competitor-view">
+        <form id="view-competitor-data">
+            <label for="competitor-name">Competitor Name: </label>
+            <input bind:value={competitor_company_name} type="competitor_name" id="comp_name" name="comp_name">
+        </form>
+        <button on:click={get_competitor_details}>Get Details</button>
+    </div>
+    {#if display_competitor}
+        <svelte:component this={IndividualStock} name={competitor_name} price={competitor_price} open={competitor_open} 
+                                                ask={competitor_ask} day_range={competitor_day_range}
+                                                volume={competitor_volume} company_name={comp_full_name}
+                                                financial_market={competitor_financial_market} bid={competitor_bid}>
+                                            </svelte:component>
+
+    {/if}
 
     <div id="change-password">
         <form id="change-password-box">

@@ -15,8 +15,8 @@
     <table>
         <thead>
             <tr>
-                <th>{name}</th>
-                <th>{company_name}</th>
+                <th colspan="2">{name} - {company_name}</th>
+                <!-- <th>{company_name}</th> -->
                 <th colspan="2">{financial_market}</th>
             </tr>
         </thead>
