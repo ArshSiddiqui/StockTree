@@ -26,6 +26,7 @@ def login():
     data =  json.loads(request.get_data())
     # fetch password from database
     r = c.execute(f"SELECT * FROM ACCOUNTS WHERE Username='{data['username']}'")
+    print("r", r)
     fetched_data = r.fetchone()
     fetched_password = fetched_data[1]
     user_type = fetched_data[2]
@@ -189,10 +190,49 @@ def change_password():
 
 # COMPANY VIEW FUNCTIONALITY
 
+# get company details
+@app.route("/companyDetails", methods=['POST'])
+def company_details():
+    # connect to the database
+    connection = sqlite3.connect('StockTreeDB.db')
+    c = connection.cursor()
+    # get data from json request
+    data = json.loads(request.get_data())
+    r = c.execute(f"SELECT * FROM COMPANY WHERE Name='{data['company_name']}'")
+    res = r.fetchall()[0]
+    # extract all data
+    ceo, industry, abbrev, name = res
+    return {
+        "ceo": ceo,
+        "industry": industry,
+        "abbreviation": abbrev,
+    }
+
+
 # get stock details
-@app.route("/getStock", methods=['GET'])
+@app.route("/getStock", methods=['POST'])
 def get_stock():
-    return 1
+    # connect to the database
+    connection = sqlite3.connect('StockTreeDB.db')
+    c = connection.cursor()
+    # get data from json request
+    data = json.loads(request.get_data())
+    r = c.execute(f"SELECT * FROM STOCK WHERE CName='{data['company_name']}'")
+    res = r.fetchall()[0]
+    # Extract all data
+    abbrev, price, openv, ask, day_range, volume, cname, bid, fmarket = res    
+    return {
+        "abbreviation": abbrev,
+        "price": price,
+        "open": openv,
+        "ask": ask,
+        "day_range": day_range,
+        "volume": volume,
+        "cname": cname,
+        "bid": bid,
+        "fmarket": fmarket,
+    }
+    
 
 # Path to fetch, i.e. SELECT
 @app.route("/fetch")

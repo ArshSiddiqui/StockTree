@@ -8,6 +8,7 @@
     export let volume = "volume";
     export let company_name = "company-name";
     export let financial_market = "financial-market";
+    export let bid = "bid";
 </script>
 
 <div id="stock_details">
@@ -35,7 +36,8 @@
             <tr>
                 <th>Volume</th>
                 <th>{volume}</th>
-
+                <th>Bid</th>
+                <th>{bid}</th>
             </tr>
         </tbody>
     </table> 

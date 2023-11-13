@@ -3,7 +3,6 @@
     import CompanyView from "./company_view.svelte";
     import SignupView from "./signup_view.svelte";
     import AdminView from "./admin_view.svelte";
-    import IndividualStock from "./individual_stock.svelte";
 
     let logged_in = false;
     let signup_in = false;
@@ -21,6 +20,7 @@
         })
       })
       let data = await response.json();
+      console.log("data", data);
       logged_in = data["valid_password"];
       user_type = data["user_type"];
     }
@@ -42,7 +42,6 @@
       </form>
       <button on:click={login}>Login</button>
       <button on:click={signup}>Sign up</button>
-      <svelte:component this={IndividualStock}></svelte:component>
     </div>
 {:else if logged_in == true && user_type == "Stockholder"}
     <svelte:component this={StockholderView} username={username}></svelte:component>

@@ -3,6 +3,7 @@
     import AddStocktoWatchlist from "./addStocktoWatchlist.svelte";
     import DeleteStockfromWatchlist from "./deleteStockfromWatchlist.svelte";
     import UpdateInvestment from "./updateInvestment.svelte";
+    import Profile from "./profile.svelte";
 
     let logged_in = true;
     let password = "";
@@ -26,6 +27,7 @@
     Stockholder View
     <div id="logout-div">
         <button on:click={logout}>Logout</button>
+        <svelte:component this={Profile}></svelte:component>
     </div>
     <svelte:component this={AddStocktoWatchlist}></svelte:component>
     <br/><br/>

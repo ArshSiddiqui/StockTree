@@ -1,4 +1,5 @@
 div.svelte-ux9o3s{display:flex;align-items:center;flex-direction:column;justify-content:center}button.svelte-ux9o3s{cursor:pointer}
+.profile-dropdown.svelte-n4qg1h.svelte-n4qg1h{position:relative;display:flex;justify-content:flex-end;margin:10px}button.svelte-n4qg1h.svelte-n4qg1h{background:none;border:none;cursor:pointer;text-decoration:underline}.profile-content.svelte-n4qg1h.svelte-n4qg1h{position:absolute;top:0;right:0;background-color:#fff;box-shadow:0 0 5px rgba(0, 0, 0, 0.2);padding:10px;text-align:center;display:none}.profile-content.svelte-n4qg1h img.svelte-n4qg1h{max-width:100px}.profile-dropdown.svelte-n4qg1h:hover .profile-content.svelte-n4qg1h{display:block}
 div.svelte-ke4b5z{display:flex;align-items:center;flex-direction:column;justify-content:center}button.svelte-ke4b5z{cursor:pointer}h3.svelte-ke4b5z{color:#213a1b;font-family:'Hind Siliguri';font-size:x-large}select.svelte-ke4b5z{border:none;border-radius:10px;background-color:#ccd9c9;font-size:large}option.svelte-ke4b5z{font-size:large;font-family:'Hind Siliguri'}#signup-box.svelte-ke4b5z{font-family:'Hind Siliguri';font-size:large;margin-bottom:1rem}
 
 /*# sourceMappingURL=bundle.css.map */
