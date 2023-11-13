@@ -12,6 +12,10 @@
     let logged_in = true;
     let password = "";
 
+    let company_chart_ctx;
+    let company_chart;
+    let competitor_chart;
+
     // Stock Details
     let name = "stock-name";
     let price = "price";
@@ -109,6 +113,7 @@
         competitor_bid = data['bid'];
         competitor_financial_market = data['fmarket'];
         display_competitor = true;
+        get_historical_data(comp_full_name, false);
     }
 
     function close_competitor_view(){display_competitor=false;}
@@ -131,8 +136,69 @@
 
     function close_country_view(){display_country=false;}
 
+    async function get_historical_data(comp_name, curr_comp) {
+        let response = await fetch("/getHistoricalStockData", {
+            method: "POST",
+            body: JSON.stringify({
+                "company_name": comp_name,
+            })
+        })
+        let data = await response.json();
+        console.log("data", data);
+        let historical_data = data['historical_data'].split(",");
+        console.log("parsed data", historical_data);
+        let dates = data['dates'].split(";");
+        console.log("dates: ", dates);
+        let totalData = []
+        for (let i = 0; i < dates.length; i++) {
+            totalData[i] = {x:dates[i], y:historical_data[i]};
+        }
+        console.log("Tot data ", totalData);
+        
+        console.log(document.getElementById("graph"));
+        if (curr_comp) {
+           company_chart_ctx = company_chart.getContext('2d');
+        } else {
+            company_chart_ctx = competitor_chart.getContext('2d');
+        }
+        new Chart(company_chart_ctx, {
+            type: "line",
+            data: {
+                labels: dates,
+                datasets: [{
+                    label: 'Value of stock over time',
+                    fill: false,
+                    borderColor: "#213a1b",
+                    pointRadius: 4,
+                    pointBackgroundColor: "rgba(0,0,0,1)",
+                    data: totalData
+                }] 
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Closing Value of Stock'
+                        }
+                    }],
+                    xAxes: [{
+                        ticks: {
+                            reverse: true
+                        },
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Date',
+                        }
+                    }]
+                }
+            }
+        });
+    }
+
     get_company_details();
     get_stock();
+    get_historical_data(companyName, true);
 </script>
 
 {#if logged_in == true}
@@ -154,6 +220,9 @@
                                                 volume={volume} company_name={company_name}
                                                 financial_market={financial_market} bid={bid}>
                                             </svelte:component>
+    <div id="company-chart">
+        <canvas bind:this={company_chart} id="historical-chart"></canvas>
+    </div>
 
     
     <h3>View Competitor Details</h3>
@@ -171,6 +240,9 @@
                                                 volume={competitor_volume} company_name={comp_full_name}
                                                 financial_market={competitor_financial_market} bid={competitor_bid}>
                                             </svelte:component>
+        <div id="competitor-chart">
+            <canvas bind:this={competitor_chart} id="historical-chart"></canvas>
+        </div>
 
     {/if}
 

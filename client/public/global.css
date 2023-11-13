@@ -131,3 +131,20 @@ th, td {
 	top: 2rem;
 	right: 3rem;
 }
+
+#company-chart {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+}
+
+#competitor-chart {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+}
+
+#historical-chart {
+	max-width: 40rem;
+	max-height: 20rem;
+}

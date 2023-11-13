@@ -1,6 +1,9 @@
 from flask import Flask, send_from_directory, request
 import sqlite3
 import json
+import requests
+from bs4 import BeautifulSoup
+
 
 app = Flask(__name__)
 connection = 0
@@ -253,7 +256,46 @@ def get_country_details():
         "population": population,
     }
 
-    
+# get historical stock data
+@app.route("/getHistoricalStockData", methods=['POST'])
+def get_historical_stock_data():
+    # connect to the database
+    connection = sqlite3.connect('StockTreeDB.db')
+    c = connection.cursor()
+    # get data from json request
+    data = json.loads(request.get_data())
+    r = c.execute(f"SELECT * FROM STOCK WHERE CName='{data['company_name']}'")
+    res = r.fetchall()[0]
+    # Extract all data
+    abbrev, price, openv, ask, day_range, volume, cname, bid, fmarket = res    
+    print("abbrev:", abbrev)
+    headers = {'User-Agent': 'Mozilla/5.0'}
+    url = f"https://finance.yahoo.com/quote/{abbrev}/history?p={abbrev}"
+    page = requests.get(url, headers=headers)
+    soup = BeautifulSoup(page.content, "html.parser")
+
+    data_table = soup.findAll("table")[0]
+    data_table_rows = data_table.find_all("tr")
+    data_table_data = []
+    data_table_dates = []
+    iter = 0
+    for r in data_table_rows:
+        if iter > 10:
+            break
+        col = r.find_all("td")
+        col = [t.text.strip() for t in col]
+        if len(col) > 2:
+            data_table_data.append(col[5])
+            data_table_dates.append(col[0])
+            iter += 1
+
+    return {
+        "historical_data": (",").join([str(elem) for elem in data_table_data]),
+        "dates": (";").join([str(e) for e in data_table_dates]), 
+    }
+
+
+
 
 # Path to fetch, i.e. SELECT
 @app.route("/fetch")
