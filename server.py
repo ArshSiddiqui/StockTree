@@ -65,6 +65,44 @@ def deleteStock():
             return {
             "is_deleted": "false"
             }
+        
+# Path to connect to our database
+@app.route("/addStockToWatchlist", methods=['POST'])
+def addStockToWatchlist():
+    # Connect to the database
+    connection = sqlite3.connect('StockTreeDB.db')
+    c = connection.cursor()
+    
+    # Load data from the request
+    data = json.loads(request.get_data())
+    
+    # Check if the stock already exists in the watchlist
+    r = c.execute("SELECT Name FROM WATCHLIST WHERE Name = ?", (data['Name'],))
+    fetched_stock = r.fetchone()
+    
+    if fetched_stock:
+        connection.close()
+        return {
+            "is_added": "false",
+            "message": "Stock is already in the watchlist."
+        }
+    else:
+        try:
+            # Insert the new stock into the watchlist table with Name and Price attributes
+            c.execute("INSERT INTO WATCHLIST (Name, Price) VALUES (?, ?)", (data['Name'], data['Price']))
+            connection.commit()
+            connection.close()
+            return {
+                "is_added": "true",
+                "message": "Stock added to watchlist and saved in the database."
+            }
+        except:
+            connection.close()
+            return {
+                "is_added": "false",
+                "message": "Failed to add the stock to the watchlist and save in the database."
+            }
+
 # import sqlite3
 # import requests
 # from bs4 import BeautifulSoup
