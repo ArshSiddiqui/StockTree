@@ -2,7 +2,7 @@ from flask import Flask, send_from_directory, request
 import sqlite3
 import json
 import requests
-from bs4 import BeautifulSoup
+#from bs4 import BeautifulSoup
 
 
 app = Flask(__name__)
@@ -293,6 +293,33 @@ def get_historical_stock_data():
         "historical_data": (",").join([str(elem) for elem in data_table_data]),
         "dates": (";").join([str(e) for e in data_table_dates]), 
     }
+
+@app.route("/getNewCountry", methods=['POST'])
+def get_new_country():
+    #get country
+    json_data = json.loads(request.get_data())
+    country = json_data['country_name']
+    #Get data from api
+    param = ''
+    #note: there is a lot of info
+    #available through the world bank
+    gdp_ind = "NY.GDP.MKTP.CD"
+    unemp_ind = "SL.UEM.TOTL.ZS"
+    infl_ind = "FP.CPI.TOTL.ZG"
+    url = "http://api.worldbank.org/v2/country/" + country + "/indicator/" + gdp_ind + "?format=json"
+    requests.get(url, params=param)
+    #parse
+    data = response.json()[1][0] 
+    print(data)
+    #where name = data["name"]
+    #region = data["region"]["value"]
+    #add data to database
+    # connect to the database
+    connection = sqlite3.connect('StockTreeDB.db')
+    c = connection.cursor()
+    r = c.execute(f"INSERT INTO COUNTRY WHERE Name='{country}'")
+    res = r.fetchall()[0]
+
 
 
 
