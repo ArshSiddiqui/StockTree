@@ -3,6 +3,7 @@
     import AddStocktoWatchlist from "./addStocktoWatchlist.svelte";
     import DeleteStockfromWatchlist from "./deleteStockfromWatchlist.svelte";
     import UpdateInvestment from "./updateInvestment.svelte";
+    import SearchCountry from "./searchCountry.svelte";
     import Profile from "./profile.svelte";
 
     let logged_in = true;
@@ -34,6 +35,8 @@
     <svelte:component this={DeleteStockfromWatchlist}></svelte:component>
     <br/><br/>
     <svelte:component this={UpdateInvestment}></svelte:component>
+    <br/><br/>
+    <svelte:component this={SearchCountry}></svelte:component>
 
     <div id="change-password">
         <form id="change-password-box">
