@@ -298,7 +298,7 @@ def get_historical_stock_data():
 def get_new_country():
     #get country
     json_data = json.loads(request.get_data())
-    country = json_data['country_name']
+    country = json_data['name']
     #Get data from api
     param = ''
     #note: there is a lot of info
@@ -307,18 +307,28 @@ def get_new_country():
     unemp_ind = "SL.UEM.TOTL.ZS"
     infl_ind = "FP.CPI.TOTL.ZG"
     url = "http://api.worldbank.org/v2/country/" + country + "/indicator/" + gdp_ind + "?format=json"
-    requests.get(url, params=param)
+    response = requests.get(url, params=param)
     #parse
-    data = response.json()[1][0] 
-    print(data)
-    #where name = data["name"]
-    #region = data["region"]["value"]
+    data = response.json()[1][0]
+    gdp = data["value"]
+    url = "http://api.worldbank.org/v2/country/" + country + "/indicator/" + unemp_ind + "?format=json"
+    response = requests.get(url, params=param)
+    #parse
+    data = response.json()[1][0]
+    unemp = data["value"]
+    url = "http://api.worldbank.org/v2/country/" + country + "/indicator/" + infl_ind + "?format=json"
+    response = requests.get(url, params=param)
+    #parse
+    data = response.json()[1][0]
+    infl = data["value"]
     #add data to database
     # connect to the database
     connection = sqlite3.connect('StockTreeDB.db')
     c = connection.cursor()
-    r = c.execute(f"INSERT INTO COUNTRY WHERE Name='{country}'")
-    res = r.fetchall()[0]
+    r = c.execute(f"INSERT INTO COUNTRY (Name, GDP, Unemployment_rate, Inflation_rate) VALUES ('{country}', '{gdp}', '{unemp}', '{infl}')")
+    return {
+        "outcome":"success" 
+    }
 
 
 
