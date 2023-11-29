@@ -428,6 +428,38 @@ def empl_stats_reports():
             "data": "false"
         }
 
+@app.route("/countryStatsReports", methods=["POST"])
+def country_stats_reports():
+    # connect to the database
+    connection = sqlite3.connect('StockTreeDB.db')
+    c = connection.cursor()
+    data = json.loads(request.get_data())
+    try:
+        # fetch country-specific details from the database
+        r = c.execute(f"SELECT COUNT(*) FROM COUNTRY WHERE Name='{data['country_name']}'")
+        country_exists = r.fetchall()[0][0]
+
+        if country_exists:
+            # find the avg inflation rate, avg unemployment rate, and min population for each country
+            r = c.execute(f"SELECT AVG(Inflation_rate), AVG(Unemployment_rate), MIN(Population) FROM COUNTRY WHERE Name='{data['country_name']}'")
+            country_data = r.fetchall()[0]
+            avg_inflation_rate, avg_unemployment_rate, min_population = country_data
+            # return country data paramaters
+            return {
+                "country_name": data['country_name'],
+                "average_inflation_rate": avg_inflation_rate,
+                "average_unemployment_rate": avg_unemployment_rate,
+                "minimum_population": min_population,
+            }
+        else:
+            return {
+                "message": "Country not found in database."
+            }
+    except:
+        print("Failed to get country stats")
+        return {
+            "failed to get country stats"
+        }
 
 
 
