@@ -3,6 +3,7 @@
     export let name = "country-name";
     export let unemployment_rate = 0;
     export let gdp = 0;
+    export let gdp_per_capita = 0;
     export let inflation_rate = 0;
     export let population = 0;
 
@@ -23,10 +24,16 @@
                 <th>{gdp}</th>
             </tr>
             <tr>
-                <th>inflation Rate</th>
+                <th>Inflation Rate</th>
                 <th>{inflation_rate}%</th>
-                <th>population</th>
+                <th>Population</th>
                 <th>{population}</th>
+            </tr>
+            <tr>
+                <th>GDP Per Capita</th>
+                <th>{gdp_per_capita}</th>
+                <th></th>
+                <th></th>
             </tr>
         </tbody>
     </table> 

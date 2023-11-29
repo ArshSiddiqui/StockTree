@@ -226,10 +226,13 @@ def company_details():
         res = r.fetchall()[0]
         # extract all data
         ceo, industry, abbrev, name = res
+        r = c.execute(f"SELECT Country_name FROM OPERATES_IN WHERE CName='{data['company_name']}'")
+        country = r.fetchall()[0]
         return {
             "ceo": ceo,
             "industry": industry,
             "abbreviation": abbrev,
+            "country": country
         }
     except:
         print("failed company details")
@@ -283,12 +286,15 @@ def get_country_details():
         res = r.fetchall()[0]
         # extract all data
         unemployment, gdp, name, inflation, population = res
+        r = c.execute(f"SELECT GDP / Population FROM COUNTRY WHERE Name='{data['country_name']}'")
+        gdp_per_capita = r.fetchall()[0]
         return {
             "unemployment_rate": unemployment,
             "gdp": gdp,
             "name": name,
             "inflation_rate": inflation,
             "population": population,
+            "gdp_per_capita": gdp_per_capita,
         }
     except: 
         print("get country details")

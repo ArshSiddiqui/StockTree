@@ -11,6 +11,7 @@
     let abbreviation = "abbreviation";
     let logged_in = true;
     let password = "";
+    let country = "country-name";
 
     let company_chart_ctx;
     let company_chart;
@@ -48,6 +49,7 @@
     let gdp = 0;
     let inflation_rate = 0;
     let population = 0;
+    let gdp_per_capita = 0;
 
     // Employee Details
     let num_employees = "";
@@ -95,7 +97,6 @@
         })
         let data = await response.json();
         if (data["data"] == "true") {
-            console.log("data:", data);
             num_employees = data["num_empl"];
             highest_salaried_empyloyee = data["highest_empl"];
             lowest_salaried_employee = data["lowest_empl"];
@@ -116,6 +117,7 @@
         ceo = data['ceo'];
         industry = data['industry'];
         abbreviation = data['abbreviation'];
+        country = data['country'];
     }
 
     async function get_competitor_details() {
@@ -154,6 +156,7 @@
         gdp = data['gdp'];
         inflation_rate = data['inflation_rate'];
         population = data['population'];
+        gdp_per_capita = data['gdp_per_capita'];
         display_country = true;
     }
 
@@ -167,18 +170,13 @@
             })
         })
         let data = await response.json();
-        console.log("data", data);
         let historical_data = data['historical_data'].split(",");
-        console.log("parsed data", historical_data);
         let dates = data['dates'].split(";");
-        console.log("dates: ", dates);
         let totalData = []
         for (let i = 0; i < dates.length; i++) {
             totalData[i] = {x:dates[i], y:historical_data[i]};
         }
-        console.log("Tot data ", totalData);
         
-        console.log(document.getElementById("graph"));
         if (curr_comp) {
            company_chart_ctx = company_chart.getContext('2d');
         } else {
@@ -238,6 +236,7 @@
         <h3>CEO: {ceo}</h3>
         <h3>Industry: {industry}</h3>
         <h3>Primary Stock Abbreviation: {abbreviation}</h3>
+        <h3>Country: {country}</h3>
     </div>
 
     <div id="employee-details">
@@ -247,7 +246,7 @@
             <h4>Lowest salaried employee: {lowest_salaried_employee}</h4>
             <h4>Average salary: {average_salary}</h4>
         {:else}
-            <h4>No registered employees with {companyName}</h4>
+            <h4>No registered employees with {companyName} in StockTree.</h4>
         {/if}
     </div>
 
@@ -259,7 +258,6 @@
         <canvas bind:this={company_chart} id="historical-chart"></canvas>
     </div>
 
-    
     <h3>View Competitor Details</h3>
     <div id="competitor-view">
         <form id="view-competitor-data">
@@ -292,7 +290,7 @@
     {#if display_country}
         <button on:click={close_country_view}>Close Country View</button>
         <svelte:component this={IndividualCountry} name={country_full_name} unemployment_rate={unemployment_rate}
-                                                    gdp={gdp} inflation_rate={inflation_rate}
+                                                    gdp={gdp} gdp_per_capita={gdp_per_capita} inflation_rate={inflation_rate}
                                                     population={population}></svelte:component>
     {/if}
 
