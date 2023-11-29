@@ -221,6 +221,7 @@
     get_stock();
     get_historical_data(companyName, true);
     get_employee_stats();
+    get_country_details();
 </script>
 
 {#if logged_in == true}
