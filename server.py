@@ -149,10 +149,17 @@ def update_investment(sh_bank_ac, sh_amt_invested):
 
     updated_query = f"UPDATE INVESTMENT AMOUNT = {sh_amt_invested} WHERE BankAccount = {sh_bank_ac}"
 
-    c.execute(updated_query, (sh_amt_invested, sh_bank_ac));
-    connection.commit()
-    print(f"Updated investment amount of {sh_bank_acc} to {sh_amt_invested}")
-    connection.close()
+    try:
+        c.execute(updated_query, (sh_amt_invested, sh_bank_ac));
+    
+        connection.commit()
+        print(f"Updated investment amount of {sh_bank_acc} to {sh_amt_invested}")
+        connection.close()
+    except:
+        connection.close()
+        print("failed update investment")
+
+
 
 
 # def update_financial_markets():
@@ -169,11 +176,18 @@ def add_user():
     # get data from json request
     data =  json.loads(request.get_data())
     # add user to the database
-    c.execute(f"INSERT INTO ACCOUNTS VALUES ('{data['username']}','{data['password']}','{data['account_type']}')")
-    connection.commit()
-    return {
-        "success": "1"
-    }
+    try:
+        c.execute(f"INSERT INTO ACCOUNTS VALUES ('{data['username']}','{data['password']}','{data['account_type']}')")
+        connection.commit()
+        return {
+            "success": "1"
+        }
+    except:
+        print("failed add user")
+        return {
+            "failed add user"
+        }
+
 
 # change password 
 @app.route("/changePassword", methods=['POST'])
@@ -184,11 +198,17 @@ def change_password():
     # get data from json request
     data =  json.loads(request.get_data())
     # add user to the database
-    c.execute(f"UPDATE ACCOUNTS SET Password='{data['password']}' WHERE Username='{data['username']}'")
-    connection.commit()
-    return {
-        "success": "1"
-    }
+    try:
+        c.execute(f"UPDATE ACCOUNTS SET Password='{data['password']}' WHERE Username='{data['username']}'")
+        connection.commit()
+        return {
+            "success": "1"
+        }
+    except:
+        print("failed change password")
+        return {
+            "failed change password"
+        }
 
 
 # COMPANY VIEW FUNCTIONALITY
@@ -201,15 +221,21 @@ def company_details():
     c = connection.cursor()
     # get data from json request
     data = json.loads(request.get_data())
-    r = c.execute(f"SELECT * FROM COMPANY WHERE Name='{data['company_name']}'")
-    res = r.fetchall()[0]
-    # extract all data
-    ceo, industry, abbrev, name = res
-    return {
-        "ceo": ceo,
-        "industry": industry,
-        "abbreviation": abbrev,
-    }
+    try:
+        r = c.execute(f"SELECT * FROM COMPANY WHERE Name='{data['company_name']}'")
+        res = r.fetchall()[0]
+        # extract all data
+        ceo, industry, abbrev, name = res
+        return {
+            "ceo": ceo,
+            "industry": industry,
+            "abbreviation": abbrev,
+        }
+    except:
+        print("failed company details")
+        return {
+            "failed company details"
+        }
 
 
 # get stock details
@@ -220,21 +246,28 @@ def get_stock():
     c = connection.cursor()
     # get data from json request
     data = json.loads(request.get_data())
-    r = c.execute(f"SELECT * FROM STOCK WHERE Name='{data['company_name']}'")
-    res = r.fetchall()[0]
-    # Extract all data
-    abbrev, price, openv, ask, day_range, volume, cname, bid, fmarket = res    
-    return {
-        "abbreviation": abbrev,
-        "price": price,
-        "open": openv,
-        "ask": ask,
-        "day_range": day_range,
-        "volume": volume,
-        "cname": cname,
-        "bid": bid,
-        "fmarket": fmarket,
-    }
+    try:
+        r = c.execute(f"SELECT * FROM STOCK WHERE Name='{data['company_name']}'")
+        res = r.fetchall()[0]
+        # Extract all data
+        abbrev, price, openv, ask, day_range, volume, cname, bid, fmarket = res    
+        return {
+            "abbreviation": abbrev,
+            "price": price,
+            "open": openv,
+            "ask": ask,
+            "day_range": day_range,
+            "volume": volume,
+            "cname": cname,
+            "bid": bid,
+            "fmarket": fmarket,
+        }
+    except:
+        print("get stock")
+        return {
+            "get stock"
+        }
+       
 
 # get country details
 @app.route("/getCountryDetails", methods=['POST'])
@@ -244,17 +277,23 @@ def get_country_details():
     c = connection.cursor()
     # get data from json request
     data = json.loads(request.get_data())
-    r = c.execute(f"SELECT * FROM COUNTRY WHERE Name='{data['country_name']}'")
-    res = r.fetchall()[0]
-    # extract all data
-    unemployment, gdp, name, inflation, population = res
-    return {
-        "unemployment_rate": unemployment,
-        "gdp": gdp,
-        "name": name,
-        "inflation_rate": inflation,
-        "population": population,
-    }
+    try:
+        r = c.execute(f"SELECT * FROM COUNTRY WHERE Name='{data['country_name']}'")
+        res = r.fetchall()[0]
+        # extract all data
+        unemployment, gdp, name, inflation, population = res
+        return {
+            "unemployment_rate": unemployment,
+            "gdp": gdp,
+            "name": name,
+            "inflation_rate": inflation,
+            "population": population,
+        }
+    except: 
+        print("get country details")
+        return {
+            "get country details"
+        }
 
 # get historical stock data
 @app.route("/getHistoricalStockData", methods=['POST'])
@@ -264,75 +303,94 @@ def get_historical_stock_data():
     c = connection.cursor()
     # get data from json request
     data = json.loads(request.get_data())
-    r = c.execute(f"SELECT * FROM STOCK WHERE CName='{data['company_name']}'")
-    res = r.fetchall()[0]
-    # Extract all data
-    abbrev, price, openv, ask, day_range, volume, cname, bid, fmarket = res    
-    print("abbrev:", abbrev)
-    headers = {'User-Agent': 'Mozilla/5.0'}
-    url = f"https://finance.yahoo.com/quote/{abbrev}/history?p={abbrev}"
-    page = requests.get(url, headers=headers)
-    soup = BeautifulSoup(page.content, "html.parser")
+    try:
+        r = c.execute(f"SELECT * FROM STOCK WHERE CName='{data['company_name']}'")
+        res = r.fetchall()[0]
+        # Extract all data
+        abbrev, price, openv, ask, day_range, volume, cname, bid, fmarket = res    
+        print("abbrev:", abbrev)
+        headers = {'User-Agent': 'Mozilla/5.0'}
+        url = f"https://finance.yahoo.com/quote/{abbrev}/history?p={abbrev}"
+        page = requests.get(url, headers=headers)
+        soup = BeautifulSoup(page.content, "html.parser")
 
-    data_table = soup.findAll("table")[0]
-    data_table_rows = data_table.find_all("tr")
-    data_table_data = []
-    data_table_dates = []
-    iter = 0
-    for r in data_table_rows:
-        if iter > 10:
-            break
-        col = r.find_all("td")
-        col = [t.text.strip() for t in col]
-        if len(col) > 2:
-            data_table_data.append(col[5])
-            data_table_dates.append(col[0])
-            iter += 1
+        data_table = soup.findAll("table")[0]
+        data_table_rows = data_table.find_all("tr")
+        data_table_data = []
+        data_table_dates = []
+        iter = 0
+        for r in data_table_rows:
+            if iter > 10:
+                break
+            col = r.find_all("td")
+            col = [t.text.strip() for t in col]
+            if len(col) > 2:
+                data_table_data.append(col[5])
+                data_table_dates.append(col[0])
+                iter += 1
 
-    return {
-        "historical_data": (",").join([str(elem) for elem in data_table_data]),
-        "dates": (";").join([str(e) for e in data_table_dates]), 
-    }
+        return {
+            "historical_data": (",").join([str(elem) for elem in data_table_data]),
+            "dates": (";").join([str(e) for e in data_table_dates]), 
+        }
+    except:
+        print("get historical stock data")
+        return {
+            "get historical stock data"
+        }
 
 @app.route("/getNewCountry", methods=['POST'])
 def get_new_country():
-    #get country
-    json_data = json.loads(request.get_data())
-    country = json_data['name']
-    #Get data from api
-    param = ''
-    #note: there is a lot of info
-    #available through the world bank
-    gdp_ind = "NY.GDP.MKTP.CD"
-    unemp_ind = "SL.UEM.TOTL.ZS"
-    infl_ind = "FP.CPI.TOTL.ZG"
-    url = "http://api.worldbank.org/v2/country/" + country + "/indicator/" + gdp_ind + "?format=json"
-    response = requests.get(url, params=param)
-    #parse
-    data = response.json()[1][0]
-    gdp = data["value"]
-    url = "http://api.worldbank.org/v2/country/" + country + "/indicator/" + unemp_ind + "?format=json"
-    response = requests.get(url, params=param)
-    #parse
-    data = response.json()[1][0]
-    unemp = data["value"]
-    url = "http://api.worldbank.org/v2/country/" + country + "/indicator/" + infl_ind + "?format=json"
-    response = requests.get(url, params=param)
-    #parse
-    data = response.json()[1][0]
-    infl = data["value"]
-    return {
-        "name":name, "gdp":gdp, "unempl_rate":unemp, "infl_rate":infl 
-    }
+    try:
+        #get country
+        json_data = json.loads(request.get_data())
+        country = json_data['name']
+        #Get data from api
+        param = ''
+        #note: there is a lot of info
+        #available through the world bank
+        gdp_ind = "NY.GDP.MKTP.CD"
+        unemp_ind = "SL.UEM.TOTL.ZS"
+        infl_ind = "FP.CPI.TOTL.ZG"
+        url = "http://api.worldbank.org/v2/country/" + country + "/indicator/" + gdp_ind + "?format=json"
+        response = requests.get(url, params=param)
+        #parse
+        data = response.json()[1][0]
+        gdp = data["value"]
+        url = "http://api.worldbank.org/v2/country/" + country + "/indicator/" + unemp_ind + "?format=json"
+        response = requests.get(url, params=param)
+        #parse
+        data = response.json()[1][0]
+        unemp = data["value"]
+        url = "http://api.worldbank.org/v2/country/" + country + "/indicator/" + infl_ind + "?format=json"
+        response = requests.get(url, params=param)
+        #parse
+        data = response.json()[1][0]
+        infl = data["value"]
+        return {
+            "name":country, "gdp":gdp, "unempl_rate":unemp, "infl_rate":infl 
+        }
+    except:
+        print("get new country failed")
+        return {
+            "get new country failed"
+        }
 
 def add_country_to_database(country, gdp, unemp, infl):
     #add data to database
     # connect to the database
+    
     connection = sqlite3.connect('StockTreeDB.db')
     c = connection.cursor()
-    r = c.execute(f"INSERT INTO COUNTRY (Name, GDP, Unemployment_rate, Inflation_rate) VALUES ('{country}', '{gdp}', '{unemp}', '{infl}')")
-    connection.commit()
-    connection.close()
+    try:
+        r = c.execute(f"INSERT INTO COUNTRY (Name, GDP, Unemployment_rate, Inflation_rate) VALUES ('{country}', '{gdp}', '{unemp}', '{infl}')")
+        connection.commit()
+        connection.close()
+    except:
+        print("add country to database failed")
+        return {
+            "add country to database failed"
+        }
 
 
 
@@ -345,8 +403,14 @@ def fetch():
     connection = sqlite3.connect('StockTreeDB.db')
     c = connection.cursor()
     # execute a function to select from the database
-    r = c.execute("SELECT * FROM STOCK")
-    return str(r.fetchall())
+    try:
+        r = c.execute("SELECT * FROM STOCK")
+        return str(r.fetchall())
+    except:
+        print("fetch failed")
+        return {
+            "fetch failed"
+        }
 
 # Path to fetch, i.e. SELECT
 @app.route("/fetchName")
@@ -355,9 +419,15 @@ def fetchName():
     connection = sqlite3.connect('StockTreeDB.db')
     c = connection.cursor()
     # execute a function to select from the database
-    r = c.execute("SELECT CName FROM STOCK")
-    stocks = r.fetchall()
-    return stocks
+    try:
+        r = c.execute("SELECT CName FROM STOCK")
+        stocks = r.fetchall()
+        return stocks
+    except:
+        print("fetch name")
+        return {
+            "fetch name"
+        }
 
 if __name__ == "__main__":
     app.run(debug=True)
