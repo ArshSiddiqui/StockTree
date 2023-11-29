@@ -220,7 +220,7 @@ def get_stock():
     c = connection.cursor()
     # get data from json request
     data = json.loads(request.get_data())
-    r = c.execute(f"SELECT * FROM STOCK WHERE CName='{data['company_name']}'")
+    r = c.execute(f"SELECT * FROM STOCK WHERE Name='{data['company_name']}'")
     res = r.fetchall()[0]
     # Extract all data
     abbrev, price, openv, ask, day_range, volume, cname, bid, fmarket = res    
@@ -321,14 +321,18 @@ def get_new_country():
     #parse
     data = response.json()[1][0]
     infl = data["value"]
+    return {
+        "name":name, "gdp":gdp, "unempl_rate":unemp, "infl_rate":infl 
+    }
+
+def add_country_to_database(country, gdp, unemp, infl):
     #add data to database
     # connect to the database
     connection = sqlite3.connect('StockTreeDB.db')
     c = connection.cursor()
     r = c.execute(f"INSERT INTO COUNTRY (Name, GDP, Unemployment_rate, Inflation_rate) VALUES ('{country}', '{gdp}', '{unemp}', '{infl}')")
-    return {
-        "outcome":"success" 
-    }
+    connection.commit()
+    connection.close()
 
 
 
@@ -351,8 +355,9 @@ def fetchName():
     connection = sqlite3.connect('StockTreeDB.db')
     c = connection.cursor()
     # execute a function to select from the database
-    r = c.execute("SELECT Name FROM STOCK")
-    return str(r.fetchall())
+    r = c.execute("SELECT CName FROM STOCK")
+    stocks = r.fetchall()
+    return stocks
 
 if __name__ == "__main__":
     app.run(debug=True)

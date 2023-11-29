@@ -2,6 +2,7 @@
     import Login from "./login.svelte";
     import AddStocktoWatchlist from "./addStocktoWatchlist.svelte";
     import DeleteStockfromWatchlist from "./deleteStockfromWatchlist.svelte";
+    import DisplayStockList from "./displayStockList.svelte";
     import UpdateInvestment from "./updateInvestment.svelte";
     import SearchCountry from "./searchCountry.svelte";
     import Profile from "./profile.svelte";
@@ -30,6 +31,8 @@
         <button on:click={logout}>Logout</button>
         <svelte:component this={Profile}></svelte:component>
     </div>
+    <svelte:component this={DisplayStockList}></svelte:component>
+    <br/><br/>
     <svelte:component this={AddStocktoWatchlist}></svelte:component>
     <br/><br/>
     <svelte:component this={DeleteStockfromWatchlist}></svelte:component>

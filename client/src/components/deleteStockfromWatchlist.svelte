@@ -1,8 +1,4 @@
 <script>
-    $: allStocks = fetch("./fetchName")
-      .then(d => d.text())
-      .then(d => allStocks = d);
-    $: console.log(allStocks);
     let stockName = "";
     async function deleteStockClient() {
         await fetch('/deleteStock', {
@@ -28,7 +24,6 @@
 
 <div>
     <h2>Delete a stock from the watchlist</h2>
-    <p>{allStocks}</p>
     <form on:submit={deleteStockClient}>
         <label for="stockName">Stock to delete:</label>
         <input id="stockName" bind:value={stockName}>
