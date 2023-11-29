@@ -2,7 +2,7 @@ from flask import Flask, send_from_directory, request
 import sqlite3
 import json
 import requests
-#from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup
 
 
 app = Flask(__name__)
@@ -247,7 +247,8 @@ def get_stock():
     # get data from json request
     data = json.loads(request.get_data())
     try:
-        r = c.execute(f"SELECT * FROM STOCK WHERE Name='{data['company_name']}'")
+        r = c.execute(f"SELECT * FROM STOCK WHERE CName='{data['company_name']}'")
+        print(f"r {r}")
         res = r.fetchall()[0]
         # Extract all data
         abbrev, price, openv, ask, day_range, volume, cname, bid, fmarket = res    
@@ -311,8 +312,10 @@ def get_historical_stock_data():
         print("abbrev:", abbrev)
         headers = {'User-Agent': 'Mozilla/5.0'}
         url = f"https://finance.yahoo.com/quote/{abbrev}/history?p={abbrev}"
+        print(f"url {url}")
         page = requests.get(url, headers=headers)
         soup = BeautifulSoup(page.content, "html.parser")
+        print("soup get")
 
         data_table = soup.findAll("table")[0]
         data_table_rows = data_table.find_all("tr")
@@ -328,6 +331,8 @@ def get_historical_stock_data():
                 data_table_data.append(col[5])
                 data_table_dates.append(col[0])
                 iter += 1
+
+        print(f"data {data_table_dates}")
 
         return {
             "historical_data": (",").join([str(elem) for elem in data_table_data]),
@@ -393,7 +398,29 @@ def add_country_to_database(country, gdp, unemp, infl):
         }
 
 
-
+# FUNCTIONS FOR ADMIN USERS
+@app.route("/userStatsReports", methods=["POST"])
+def user_stats_reports():
+    # connect to the database
+    connection = sqlite3.connect('StockTreeDB.db')
+    c = connection.cursor()
+    try:
+        r = c.execute(f"SELECT COUNT(*) FROM ACCOUNTS WHERE Ac_type='Stockholder'")
+        num_stockholders = r.fetchall()[0]
+        r = c.execute(f"SELECT COUNT(*) FROM ACCOUNTS WHERE Ac_type='Company'")
+        num_companies = r.fetchall()[0]
+        r = c.execute(f"SELECT COUNT(*) FROM ACCOUNTS WHERE Ac_type='Admin'")
+        num_admins = r.fetchall()[0]
+        return {
+            "num_companies": num_companies,
+            "num_stockholders": num_stockholders,
+            "num_admins": num_admins
+        }
+    except:
+        print("failed to get stats")
+        return {
+            "failed to get stats"
+        }
 
 
 # Path to fetch, i.e. SELECT

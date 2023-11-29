@@ -2,7 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 
 headers = {'User-Agent': 'Mozilla/5.0'}
-url = "https://finance.yahoo.com/quote/aapl/history?p=aapl"
+url = "https://finance.yahoo.com/quote/LRCX/history?p=LRCX"
 page = requests.get(url, headers=headers)
 soup = BeautifulSoup(page.content, "html.parser")
 

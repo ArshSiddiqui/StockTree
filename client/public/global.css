@@ -104,6 +104,10 @@ h2 {
 	font-size: 30px;
 }
 
+h4 {
+	color: #213a1b;
+}
+
 #company-details {
 	display: flex;
 	align-items: center;
@@ -147,4 +151,11 @@ th, td {
 #historical-chart {
 	max-width: 40rem;
 	max-height: 20rem;
+}
+
+#admin-functionality {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
 }
