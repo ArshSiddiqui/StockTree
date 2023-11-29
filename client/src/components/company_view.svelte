@@ -49,7 +49,11 @@
     let inflation_rate = 0;
     let population = 0;
 
-
+    // Employee Details
+    let num_employees = "";
+    let highest_salaried_empyloyee = ""
+    let lowest_salaried_employee = ""
+    let average_salary = ""
 
     function logout() {logged_in = false;}
     async function change_password() {
@@ -80,6 +84,25 @@
         company_name = data['cname'];
         bid = data['bid'];
         financial_market = data['fmarket'];
+    }
+
+    async function get_employee_stats() {
+        let response = await fetch("/emplStatsReports", {
+            method: "POST",
+            body: JSON.stringify({
+                "company_name": companyName,
+            })
+        })
+        let data = await response.json();
+        if (data["data"] == "true") {
+            console.log("data:", data);
+            num_employees = data["num_empl"];
+            highest_salaried_empyloyee = data["highest_empl"];
+            lowest_salaried_employee = data["lowest_empl"];
+            average_salary = data["avg_salary"];
+        } else {
+            num_employees = "0";
+        }
     }
 
     async function get_company_details() {
@@ -199,6 +222,7 @@
     get_company_details();
     get_stock();
     get_historical_data(companyName, true);
+    get_employee_stats();
 </script>
 
 {#if logged_in == true}
@@ -214,6 +238,17 @@
         <h3>CEO: {ceo}</h3>
         <h3>Industry: {industry}</h3>
         <h3>Primary Stock Abbreviation: {abbreviation}</h3>
+    </div>
+
+    <div id="employee-details">
+        {#if num_employees !== "0"}
+            <h4>Number of {companyName} employees registered with StockTree: {num_employees}</h4>
+            <h4>Highest salaried employee: {highest_salaried_empyloyee}</h4>
+            <h4>Lowest salaried employee: {lowest_salaried_employee}</h4>
+            <h4>Average salary: {average_salary}</h4>
+        {:else}
+            <h4>No registered employees with {companyName}</h4>
+        {/if}
     </div>
 
     <svelte:component this={IndividualStock} name={name} price={price} open={open} ask={ask} day_range={day_range}

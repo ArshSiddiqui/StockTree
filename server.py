@@ -315,7 +315,6 @@ def get_historical_stock_data():
         print(f"url {url}")
         page = requests.get(url, headers=headers)
         soup = BeautifulSoup(page.content, "html.parser")
-        print("soup get")
 
         data_table = soup.findAll("table")[0]
         data_table_rows = data_table.find_all("tr")
@@ -396,6 +395,41 @@ def add_country_to_database(country, gdp, unemp, infl):
         return {
             "add country to database failed"
         }
+
+@app.route("/emplStatsReports", methods=["POST"])
+def empl_stats_reports():
+    # connect to the database
+    connection = sqlite3.connect('StockTreeDB.db')
+    c = connection.cursor()
+    data = json.loads(request.get_data())
+    try:
+        r = c.execute(f"SELECT COUNT(*) FROM EMPLOYEE WHERE CName='{data['company_name']}'")
+        num_empl = r.fetchall()[0][0]
+        print(f"num_empl {num_empl}")
+        r = c.execute(f"SELECT Fname, LName, MAX(Salary) FROM EMPLOYEE WHERE CName='{data['company_name']}'")
+        highest_empl_fname, highest_empl_lname, _ = r.fetchall()[0]
+        highest_name = highest_empl_fname + " " + highest_empl_lname
+        r = c.execute(f"SELECT Fname, LName, MIN(Salary) FROM EMPLOYEE WHERE CName='{data['company_name']}'")
+        lowest_empl_fname, lowest_empl_lname, _ = r.fetchall()[0]
+        lowest_name = lowest_empl_fname + " " + lowest_empl_lname
+        r = c.execute(f"SELECT AVG(Salary) FROM EMPLOYEE WHERE CName='Samsung'")
+        avg_salary = r.fetchall()[0]
+        print(f"avg_salary {avg_salary}")
+        return {
+            "data": "true",
+            "num_empl": num_empl,
+            "highest_empl": highest_name,
+            "lowest_empl": lowest_name,
+            "avg_salary": avg_salary
+        }
+    except:
+        print("failed to get stats")
+        return {
+            "data": "false"
+        }
+
+
+
 
 
 # FUNCTIONS FOR ADMIN USERS
