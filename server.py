@@ -521,7 +521,10 @@ def fetchName():
     try:
         r = c.execute("SELECT CName FROM STOCK")
         stocks = r.fetchall()
-        return stocks
+        print(stocks)
+        for stock in stocks:
+            print(stock[0])
+        return str(stocks)
     except:
         print("fetch name")
         return {
