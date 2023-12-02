@@ -251,12 +251,14 @@
         {/if}
     </div>
 
+    <div id="comp-details">
     <svelte:component this={IndividualStock} name={name} price={price} open={open} ask={ask} day_range={day_range}
                                                 volume={volume} company_name={company_name}
                                                 financial_market={financial_market} bid={bid}>
                                             </svelte:component>
     <div id="company-chart">
         <canvas bind:this={company_chart} id="historical-chart"></canvas>
+    </div>
     </div>
 
     <h3>View Competitor Details</h3>

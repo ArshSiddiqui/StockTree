@@ -93,6 +93,14 @@ button:focus {
 	justify-content: center;
 }
 
+#signup-center {
+	display: flex;
+	align-items: center;
+	flex-direction: column;
+	justify-content: center;
+}
+
+
 #company-header {
     margin-left: 10rem;
 }
