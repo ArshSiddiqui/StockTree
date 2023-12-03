@@ -47,24 +47,25 @@ def deleteStock():
     # load data from request
     data =  json.loads(request.get_data())
     # check if stock exists
-    r = c.execute(f"SELECT Name FROM STOCK WHERE Name='{data['stockName']}'")
+    r = c.execute(f"SELECT Name FROM STOCK WHERE CName='{data['stockName']}'")
     fetched_stock = r.fetchone()
     if fetched_stock is None:
         print("None")
         return {
-            "is_deleted": false
+            "is_deleted": "false"
         }
     else:
         try:
-            c.execute(f"DELETE from STOCK WHERE Name='{data['stockName']}'")
+            c.execute(f"DELETE from STOCK WHERE CName='{data['stockName']}'")
             print("deleted", data['stockName'])
             connection.commit()
             connection.close()
             return {
                 "is_deleted": "true"
             }
-        except:
+        except Exception as e:
             print("An error occured when trying to delete")
+            print(e)
             connection.close()
             return {
             "is_deleted": "false"
@@ -100,7 +101,9 @@ def addStockToWatchlist():
                 "is_added": "true",
                 "message": "Stock added to watchlist and saved in the database."
             }
-        except:
+        except Exception as e:
+            print("could not add stock to database")
+            print(e)
             connection.close()
             return {
                 "is_added": "false",
@@ -155,9 +158,10 @@ def update_investment(sh_bank_ac, sh_amt_invested):
         connection.commit()
         print(f"Updated investment amount of {sh_bank_acc} to {sh_amt_invested}")
         connection.close()
-    except:
+    except Exception as e:
         connection.close()
         print("failed update investment")
+        print(e)
 
 
 
@@ -182,8 +186,9 @@ def add_user():
         return {
             "success": "1"
         }
-    except:
+    except Exception as e:
         print("failed add user")
+        print(e)
         return {
             "failed add user"
         }
@@ -204,8 +209,9 @@ def change_password():
         return {
             "success": "1"
         }
-    except:
+    except Exception as e:
         print("failed change password")
+        print(e)
         return {
             "failed change password"
         }
@@ -234,10 +240,11 @@ def company_details():
             "abbreviation": abbrev,
             "country": country
         }
-    except:
+    except Exception as e:
         print("failed company details")
+        print(e)
         return {
-            "failed company details"
+            "message" : "failed"
         }
 
 
@@ -266,10 +273,11 @@ def get_stock():
             "bid": bid,
             "fmarket": fmarket,
         }
-    except:
+    except Exception as e:
         print("get stock")
+        print(e)
         return {
-            "get stock"
+            "message" : "failed"
         }
        
 
@@ -289,6 +297,7 @@ def get_country_details():
         r = c.execute(f"SELECT GDP / Population FROM COUNTRY WHERE Name='{data['country_name']}'")
         gdp_per_capita = r.fetchall()[0]
         return {
+            "message": "success",
             "unemployment_rate": unemployment,
             "gdp": gdp,
             "name": name,
@@ -296,10 +305,11 @@ def get_country_details():
             "population": population,
             "gdp_per_capita": gdp_per_capita,
         }
-    except: 
-        print("get country details")
+    except Exception as e: 
+        print("could not get country details")
+        print(e)
         return {
-            "get country details"
+            "message": "failed"
         }
 
 # get historical stock data
@@ -343,10 +353,11 @@ def get_historical_stock_data():
             "historical_data": (",").join([str(elem) for elem in data_table_data]),
             "dates": (";").join([str(e) for e in data_table_dates]), 
         }
-    except:
-        print("get historical stock data")
+    except Exception as e:
+        print("get historical stock data failed")
+        print(e)
         return {
-            "get historical stock data"
+            "message": "failed"
         }
 
 @app.route("/getNewCountry", methods=['POST'])
@@ -359,31 +370,37 @@ def get_new_country():
         param = ''
         #note: there is a lot of info
         #available through the world bank
+        url = "https://api.worldbank.org/v2/sources/2/concepts/country/search/" + country + "?format=json"
+        response = requests.get(url, params=param)
+        data = response.json()
+        country_code = data['source'][0]['concept'][0]['variable'][0]['id']
         gdp_ind = "NY.GDP.MKTP.CD"
         unemp_ind = "SL.UEM.TOTL.ZS"
         infl_ind = "FP.CPI.TOTL.ZG"
-        url = "http://api.worldbank.org/v2/country/" + country + "/indicator/" + gdp_ind + "?format=json"
+        url = "http://api.worldbank.org/v2/country/" + country_code + "/indicator/" + gdp_ind + "?mrv=1&format=json"
         response = requests.get(url, params=param)
         #parse
         data = response.json()[1][0]
         gdp = data["value"]
-        url = "http://api.worldbank.org/v2/country/" + country + "/indicator/" + unemp_ind + "?format=json"
+        url = "http://api.worldbank.org/v2/country/" + country_code + "/indicator/" + unemp_ind + "?format=json"
         response = requests.get(url, params=param)
         #parse
         data = response.json()[1][0]
         unemp = data["value"]
-        url = "http://api.worldbank.org/v2/country/" + country + "/indicator/" + infl_ind + "?format=json"
+        url = "http://api.worldbank.org/v2/country/" + country_code + "/indicator/" + infl_ind + "?format=json"
         response = requests.get(url, params=param)
         #parse
         data = response.json()[1][0]
         infl = data["value"]
+        add_country_to_database(country, gdp, unemp, infl)
         return {
             "name":country, "gdp":gdp, "unempl_rate":unemp, "infl_rate":infl 
         }
-    except:
+    except Exception as e:
         print("get new country failed")
+        print(e)
         return {
-            "get new country failed"
+            "message":"failed"
         }
 
 def add_country_to_database(country, gdp, unemp, infl):
@@ -393,13 +410,18 @@ def add_country_to_database(country, gdp, unemp, infl):
     connection = sqlite3.connect('StockTreeDB.db')
     c = connection.cursor()
     try:
-        r = c.execute(f"INSERT INTO COUNTRY (Name, GDP, Unemployment_rate, Inflation_rate) VALUES ('{country}', '{gdp}', '{unemp}', '{infl}')")
-        connection.commit()
-        connection.close()
-    except:
+        r = c.execute(f"SELECT Name FROM COUNTRY WHERE Name='{country}'")
+        fetched_stock = r.fetchone()
+        if fetched_stock is None:
+            r = c.execute(f"INSERT INTO COUNTRY (Name, GDP, Unemployment_rate, Inflation_rate) VALUES ('{country}', '{gdp}', '{unemp}', '{infl}')")
+            connection.commit()
+            connection.close()
+            return {"message":"success"}
+    except Exception as e:
         print("add country to database failed")
+        print(e)
         return {
-            "add country to database failed"
+            "message":"failed"
         }
 
 @app.route("/emplStatsReports", methods=["POST"])
@@ -428,8 +450,9 @@ def empl_stats_reports():
             "lowest_empl": lowest_name,
             "avg_salary": avg_salary
         }
-    except:
+    except Exception as e:
         print("failed to get stats")
+        print(e)
         return {
             "data": "false"
         }
@@ -461,10 +484,11 @@ def country_stats_reports():
             return {
                 "message": "Country not found in database."
             }
-    except:
+    except Exception as e:
         print("Failed to get country stats")
+        print(e)
         return {
-            "failed to get country stats"
+            "message":"failed to get country stats"
         }
 
 
@@ -488,15 +512,16 @@ def user_stats_reports():
             "num_stockholders": num_stockholders,
             "num_admins": num_admins
         }
-    except:
+    except Exception as e:
         print("failed to get stats")
+        print(e)
         return {
-            "failed to get stats"
+            "message":"failed to get stats"
         }
 
 
 # Path to fetch, i.e. SELECT
-@app.route("/fetch")
+@app.route("/fetch", methods=["POST"])
 def fetch():
     # connect to database
     connection = sqlite3.connect('StockTreeDB.db')
@@ -505,14 +530,15 @@ def fetch():
     try:
         r = c.execute("SELECT * FROM STOCK")
         return str(r.fetchall())
-    except:
+    except Exception as e:
         print("fetch failed")
+        print(e)
         return {
-            "fetch failed"
+            "message":"fetch failed"
         }
 
 # Path to fetch, i.e. SELECT
-@app.route("/fetchName")
+@app.route("/fetchName", methods=["POST"])
 def fetchName():
     # connect to database
     connection = sqlite3.connect('StockTreeDB.db')
@@ -521,14 +547,16 @@ def fetchName():
     try:
         r = c.execute("SELECT CName FROM STOCK")
         stocks = r.fetchall()
-        print(stocks)
+        stock_list = []
         for stock in stocks:
-            print(stock[0])
-        return str(stocks)
-    except:
-        print("fetch name")
+            stock_list += stock
+        stock_json = json.dumps(stock_list)
+        return str(stock_json)
+    except Exception as e:
+        print("fetch name failed")
+        print(e)
         return {
-            "fetch name"
+            "message":"fetch name"
         }
 
 if __name__ == "__main__":

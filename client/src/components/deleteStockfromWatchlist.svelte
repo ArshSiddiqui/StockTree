@@ -1,5 +1,5 @@
 <script>
-    let stockName = "";
+    let deleteStockName = "";
     async function deleteStockClient() {
         await fetch('/deleteStock', {
             method: 'POST',
@@ -7,7 +7,7 @@
             'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-            "stockName": stockName,
+            "stockName": deleteStockName,
             })
       })
       .then((response) => response.json())
@@ -26,7 +26,7 @@
     <h2>Delete a stock from the watchlist</h2>
     <form on:submit={deleteStockClient}>
         <label for="stockName">Stock to delete:</label>
-        <input id="stockName" bind:value={stockName}>
+        <input id="stockName" bind:value={deleteStockName}>
         <input type="submit" value="Submit"/> 
     </form>
 </div>
