@@ -11,7 +11,6 @@
   </script>
   
   <div>
-    <h2>Search Country</h2>
     {#if displayCountry}
     <table>
       <thead></thead>

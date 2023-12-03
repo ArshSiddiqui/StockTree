@@ -159,6 +159,7 @@
 </script>
 
 {#if logged_in == true}
+<div id="all-stockholder">
 <div>
     <div id="logout-div">
         <button on:click={logout}>Logout</button>
@@ -202,6 +203,7 @@
       </form>
     </div>
     <br/><br/>
+    <h2>Search Country</h2>    
     <form on:submit={handleNewCountry}>
       <label for="countryName">Country Name:</label>
       <input type="text" id="newCountryName" bind:value={newCountryName} required />
@@ -210,6 +212,8 @@
     </form>
     <svelte:component this={SearchCountry} newCountryName={newCountryName} countryGDP={countryGDP} countryInflation={countryInflation} countryUnemployment={countryUnemployment} displayCountry={displayCountry}></svelte:component>
 
+    <br/>
+
     <div id="change-password">
         <form id="change-password-box">
           <label for="password">Change Password: </label>
@@ -217,6 +221,7 @@
         </form>
         <button on:click={change_password}>Submit</button>
     </div>
+</div>
 </div>
 {:else if logged_in == false}
     <svelte:component this={Login}></svelte:component>
