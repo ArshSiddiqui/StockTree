@@ -46,7 +46,7 @@
         price: price
       };
   
-      fetch('/addStock', {
+      fetch('/addStockToWatchlist', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -128,6 +128,7 @@
 
     let newInvestmentName = '';
     let newInvestmentSymbol = '';
+    let price = 0;
   
     function handleUpdateInvestment() {
       // Perform validation and submit the new stock data to the server
@@ -192,10 +193,10 @@
       <h2>Update Investment</h2>
       <form on:submit={handleUpdateInvestment}>
         <label for="newStockName">Stock Name:</label>
-        <input type="text" id="newStockName" bind:value={newStockName} required />
+        <input type="text" id="newStockName" bind:value={newInvestmentName} required />
     
         <label for="newStockSymbol">New Investment:</label>
-        <input type="text" id="newStockSymbol" bind:value={newStockSymbol} required />
+        <input type="text" id="newStockSymbol" bind:value={newInvestmentSymbol} required />
     
         <button type="submit">Submit</button>
       </form>
