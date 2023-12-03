@@ -3,10 +3,52 @@
     import DisplayStockList from "./displayStockList.svelte";
     import SearchCountry from "./searchCountry.svelte";
     import Profile from "./profile.svelte";
+    import IndividualCountry from "./individual_country.svelte";
+
 
     let logged_in = true;
     let password = "";
     export let username = "username";
+
+    // Country details
+    let display_country = false;
+    let country_name = "";
+    let country_full_name = "name";
+    let unemployment_rate = 0;
+    let gdp = 0;
+    let inflation_rate = 0;
+    let population = 0;
+    let gdp_per_capita = 0;
+
+    async function get_country_details() {
+        let response = await fetch("/getCountryDetails", {
+            method: "POST",
+            body: JSON.stringify({
+                "country_name": country_name,
+            })
+        })
+        let data = await response.json();
+        if(data['message'] != "success") {
+            let response = await fetch("/getNewCountry", {
+                method: "POST",
+                body: JSON.stringify({
+                    "country_name": country_name,
+                })
+            })
+            let data = await response.json();
+        }
+        country_full_name = data['name'];
+        unemployment_rate = data['unemployment_rate'];
+        gdp = data['gdp'];
+        inflation_rate = data['inflation_rate'];
+        population = data['population'];
+        gdp_per_capita = data['gdp_per_capita'];
+        display_country = true;
+    }
+
+    function close_country_view(){display_country=false;}
+
+
 
     function logout() {logged_in = false;}
     async function change_password() {
@@ -89,43 +131,6 @@
         });
     }
 
-    let newCountryName = '';
-    let countryGDP = '';
-    let countryInflation = '';
-    let countryUnemployment = '';
-    let displayCountry = false;
-   
-  
-    function handleNewCountry() {
-      // Perform validation and submit the new country data to the server
-      // You can use the fetch API to send a POST request to the server
-      const newCountry = {
-        name: newCountryName,
-      };
-  
-      fetch('/getNewCountry', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(newCountry),
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          // Handle the server's response, e.g., show a success message
-          countryGDP = data['gdp']
-          countryInflation = data['infl_rate']
-          countryUnemployment = data['unempl_rate']
-          displayCountry = true;
-
-          console.log('Country searched successfully:', data);
-        })
-        .catch((error) => {
-          // Handle errors, e.g., display an error message
-          console.error('Error searching for country:', error);
-        });
-    }
-
     let newInvestmentName = '';
     let newInvestmentSymbol = '';
     let price = 0;
@@ -203,14 +208,23 @@
       </form>
     </div>
     <br/><br/>
-    <h2>Search Country</h2>    
-    <form on:submit={handleNewCountry}>
-      <label for="countryName">Country Name:</label>
-      <input type="text" id="newCountryName" bind:value={newCountryName} required />
-  
-      <button type="submit">Submit</button>
-    </form>
-    <svelte:component this={SearchCountry} newCountryName={newCountryName} countryGDP={countryGDP} countryInflation={countryInflation} countryUnemployment={countryUnemployment} displayCountry={displayCountry}></svelte:component>
+
+    <h2>View Country Economic Trends</h2>
+    <div id="country-view">
+        <form id="view-company-details">
+            <label for="country-name">Country name: </label>
+            <input bind:value={country_name} type="country_name">
+        </form>
+        <button on:click={get_country_details}>Get Economic Trends</button>
+    </div>
+    {#if display_country}
+        <button on:click={close_country_view}>Close Country View</button>
+        <svelte:component this={IndividualCountry} name={country_full_name} unemployment_rate={unemployment_rate}
+                                                    gdp={gdp} gdp_per_capita={gdp_per_capita} inflation_rate={inflation_rate}
+                                                    population={population}></svelte:component>
+    {/if}
+
+
 
     <br/>
 

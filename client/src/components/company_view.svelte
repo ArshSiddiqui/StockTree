@@ -167,7 +167,7 @@
         population = data['population'];
         gdp_per_capita = data['gdp_per_capita'];
         display_country = true;
-}
+    }
 
     function close_country_view(){display_country=false;}
 
