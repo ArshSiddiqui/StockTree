@@ -80,11 +80,30 @@ def addStockToWatchlist():
     
     # Load data from the request
     data = json.loads(request.get_data())
-    
-    # Check if the stock already exists in the watchlist
-    r = c.execute("SELECT Name FROM WATCHLIST WHERE Name = ?", (data['Name'],))
-    fetched_stock = r.fetchone()
-    
+    stock_dict = {}
+    stock_dict['name'] = data['name']
+    stock_dict['symbol'] = data['symbol']
+    stock_dict['s_open'] = ""
+    stock_dict['bid'] = ""
+    stock_dict['ask'] = ""
+    stock_dict['day_range'] = ""
+    stock_dict['volume'] = ""
+    stock_dict['price'] = ""
+    stock_dict['bid'] = ""
+    stock_dict['fmarket'] = ""
+    try:
+        # Check if the stock already exists in the watchlist
+        print(data['name'])
+        r = c.execute("SELECT CName FROM Stock WHERE CName = ?", (stock_dict['name'],))
+        fetched_stock = r.fetchone()
+    except:
+        print("could not query stock database")
+        print(e)
+        connection.close()
+        return {
+            "is_added": "false",
+            "message": "Failed to add the stock to the watchlist and save in the database."
+        }
     if fetched_stock:
         connection.close()
         return {
@@ -93,8 +112,35 @@ def addStockToWatchlist():
         }
     else:
         try:
+            headers = {'User-Agent': 'Mozilla/5.0'}
+            url = f"https://finance.yahoo.com/quote/{stock_dict['symbol']}"
+            print(f"url {url}")
+            page = requests.get(url, headers=headers)
+            soup = BeautifulSoup(page.content, "html.parser")
+
+            data_table = soup.findAll("table")[0]
+            data_table_rows = data_table.find_all("tr")
+            data_table_data = []
+            for r in data_table_rows:
+                col = r.find_all("td")
+                col = [t.text.strip() for t in col]
+                if col[0] == 'Open':
+                    stock_dict['s_open'] = col[1]
+                if col[0] == 'Bid':
+                    stock_dict['bid'] = col[1]
+                if col[0] == 'Ask':
+                    stock_dict['ask'] = col[1]
+                if col[0] == "Day's Range":
+                    stock_dict['day_range'] = col[1]
+                if col[0] == 'Volume':
+                    stock_dict['volume'] = col[1]
+                for key in stock_dict.keys():
+                    if stock_dict[key] == "":
+                        stock_dict[key] = "Unknown"
+                        if key == 'price' or key == 's_open' or key == 'volume':
+                            stock_dict[key] = 0
             # Insert the new stock into the watchlist table with Name and Price attributes
-            c.execute("INSERT INTO WATCHLIST (Name, Price) VALUES (?, ?)", (data['Name'], data['Price']))
+            c.execute("INSERT INTO STOCK (CName, Name, Price, Open, Ask, Day_range, Volume, Bid, FMarket) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", (stock_dict['name'], stock_dict['symbol'], stock_dict['price'], stock_dict['s_open'], stock_dict['ask'], stock_dict['day_range'], stock_dict['volume'], stock_dict['bid'], stock_dict['fmarket']))
             connection.commit()
             connection.close()
             return {
@@ -108,7 +154,7 @@ def addStockToWatchlist():
             return {
                 "is_added": "false",
                 "message": "Failed to add the stock to the watchlist and save in the database."
-            }
+            }   
 
 @app.route("/updateInvestment", methods=['POST'])
 def update_investment():

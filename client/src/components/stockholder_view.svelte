@@ -79,7 +79,7 @@
   getName();
 
   let newStockName = '';
-    let newStockPrice = '';
+    let newStockSymbol = '';
   
     function handleAddStock() {
       // Perform validation and submit the new stock data to the server
@@ -87,7 +87,6 @@
       const newStockData = {
         name: newStockName,
         symbol: newStockSymbol,
-        price: price
       };
   
       fetch('/addStockToWatchlist', {
@@ -166,8 +165,8 @@
         <label for="newStockName">Stock Name:</label>
         <input type="text" id="newStockName" bind:value={newStockName} required />
     
-        <label for="newStockPrice">Stock Price:</label>
-        <input type="text" id="newStockPrice" bind:value={newStockPrice} required />
+        <label for="newStockSymbol">Stock Symbol:</label>
+        <input type="text" id="newStockSymbol" bind:value={newStockSymbol} required />
     
         <button type="submit">Submit</button>
       </form>
