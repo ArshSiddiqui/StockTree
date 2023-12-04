@@ -40,6 +40,8 @@
             unemployment_rate = data['unemployment_rate'];
             gdp = data['gdp'];
             inflation_rate = data['inflation_rate'];
+            population = data['population'];
+            gdp_per_capita = data['gdp_per_capita'];
             display_country = true;
         }
         else {
