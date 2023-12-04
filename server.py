@@ -46,8 +46,11 @@ def deleteStock():
     c = connection.cursor()
     # load data from request
     data =  json.loads(request.get_data())
+    #get user id
+    r = c.execute(f"SELECT ID FROM ACCOUNTS WHERE Username='{data['username']}'")
+    ret = r.fetchall()[0][0]
     # check if stock exists
-    r = c.execute(f"SELECT Name FROM STOCK WHERE CName='{data['stockName']}'")
+    r = c.execute(f"SELECT Name FROM STOCK WHERE Name='{data['stockName']}'")
     fetched_stock = r.fetchone()
     if fetched_stock is None:
         print("None")
@@ -56,7 +59,16 @@ def deleteStock():
         }
     else:
         try:
-            c.execute(f"DELETE from STOCK WHERE CName='{data['stockName']}'")
+            #check stock is user's
+            r = c.execute(f"SELECT SNAME FROM OWNS WHERE OWNS.ID={ret} AND OWNS.SNAME='{data['stockName']}'")
+            fetch_owns = r.fetchone()
+            if fetch_owns is None:
+                print("not user's stock")
+                return {
+                    "is_deleted": "false"
+                }
+            c.execute(f"DELETE from STOCK WHERE Name='{data['stockName']}'")
+            c.execute(f"DELETE from OWNS WHERE OWNS.ID={ret} AND SName='{data['stockName']}'")
             print("deleted", data['stockName'])
             connection.commit()
             connection.close()
@@ -81,8 +93,12 @@ def addStockToWatchlist():
     # Load data from the request
     data = json.loads(request.get_data())
     stock_dict = {}
+    username = data['username']
+    r = c.execute(f"SELECT ID FROM ACCOUNTS WHERE Username='{data['username']}'")
+    ret = r.fetchall()[0][0]
     stock_dict['name'] = data['name']
     stock_dict['symbol'] = data['symbol']
+    stock_dict['shares'] = data['shares']
     stock_dict['s_open'] = ""
     stock_dict['bid'] = ""
     stock_dict['ask'] = ""
@@ -94,7 +110,7 @@ def addStockToWatchlist():
     try:
         # Check if the stock already exists in the watchlist
         print(data['name'])
-        r = c.execute("SELECT CName FROM Stock WHERE CName = ?", (stock_dict['name'],))
+        r = c.execute("SELECT SName FROM OWNS WHERE SName = ?", (stock_dict['symbol'],))
         fetched_stock = r.fetchone()
     except:
         print("could not query stock database")
@@ -137,10 +153,14 @@ def addStockToWatchlist():
                 for key in stock_dict.keys():
                     if stock_dict[key] == "":
                         stock_dict[key] = "Unknown"
-                        if key == 'price' or key == 's_open' or key == 'volume':
+                        if key == 'price' or key == 's_open' or key == 'volume' or key == 'shares':
                             stock_dict[key] = 0
             # Insert the new stock into the watchlist table with Name and Price attributes
-            c.execute("INSERT INTO STOCK (CName, Name, Price, Open, Ask, Day_range, Volume, Bid, FMarket) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", (stock_dict['name'], stock_dict['symbol'], stock_dict['price'], stock_dict['s_open'], stock_dict['ask'], stock_dict['day_range'], stock_dict['volume'], stock_dict['bid'], stock_dict['fmarket']))
+            r = c.execute("SELECT Name FROM STOCK WHERE Name = ?", (stock_dict['symbol'],))
+            fetched_stock = r.fetchone()
+            if not fetched_stock:
+                c.execute("INSERT INTO STOCK (CName, Name, Price, Open, Ask, Day_range, Volume, Bid, FMarket) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", (stock_dict['name'], stock_dict['symbol'], stock_dict['price'], stock_dict['s_open'], stock_dict['ask'], stock_dict['day_range'], stock_dict['volume'], stock_dict['bid'], stock_dict['fmarket']))
+            c.execute("INSERT INTO OWNS (SName, ID, Amt_Share, FMarket) VALUES (?, ?, ?, ?)", (stock_dict['symbol'], ret, stock_dict['shares'], stock_dict['fmarket']))
             connection.commit()
             connection.close()
             return {
@@ -413,7 +433,7 @@ def get_new_country():
         infl = data["value"]
         add_country_to_database(country, gdp, unemp, infl)
         return {
-            "name":country, "gdp":gdp, "unempl_rate":unemp, "infl_rate":infl 
+            "name":country, "gdp":gdp, "unemployment_rate":unemp, "inflation_rate":infl 
         }
     except Exception as e:
         print("get new country failed")

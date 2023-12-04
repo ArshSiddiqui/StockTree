@@ -155,18 +155,25 @@
             let response = await fetch("/getNewCountry", {
                 method: "POST",
                 body: JSON.stringify({
-                    "country_name": country_name,
+                    "name": country_name,
                 })
             })
             let data = await response.json();
+            country_full_name = data['name'];
+            unemployment_rate = data['unemployment_rate'];
+            gdp = data['gdp'];
+            inflation_rate = data['inflation_rate'];
+            display_country = true;
         }
-        country_full_name = data['name'];
-        unemployment_rate = data['unemployment_rate'];
-        gdp = data['gdp'];
-        inflation_rate = data['inflation_rate'];
-        population = data['population'];
-        gdp_per_capita = data['gdp_per_capita'];
-        display_country = true;
+        else {
+            country_full_name = data['name'];
+            unemployment_rate = data['unemployment_rate'];
+            gdp = data['gdp'];
+            inflation_rate = data['inflation_rate'];
+            population = data['population'];
+            gdp_per_capita = data['gdp_per_capita'];
+            display_country = true;
+        }
     }
 
     function close_country_view(){display_country=false;}
