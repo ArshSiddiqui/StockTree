@@ -6,7 +6,7 @@
     import IndividualCountry from "./individual_country.svelte";
 
 
-    let logged_in = true;
+    let logged_in = true
     let password = "";
     export let username = "username";
 
@@ -131,36 +131,23 @@
         });
     }
 
-    let newInvestmentName = '';
+    let newInvestmentAmt = '';
     let newInvestmentSymbol = '';
-    let price = 0;
   
-    function handleUpdateInvestment() {
+    async function handleUpdateInvestment() {
       // Perform validation and submit the new stock data to the server
       // You can use the fetch API to send a POST request to the server
-      const newStockData = {
-        name: newInvestmentName,
-        symbol: newInvestmentSymbol,
-        price: price
-      };
-  
-      fetch('/updateInvestment', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(newStockData),
+      console.log("here!!!");
+      let response = await fetch("/updateInvestment", {
+            method: "POST",
+            body: JSON.stringify({
+                "name": newInvestmentSymbol,
+                "amt": newInvestmentAmt,
+                "username": username
+            })
       })
-        .then((response) => response.json())
-        .then((data) => {
-          // Handle the server's response, e.g., show a success message
-          console.log('Stock added successfully:', data);
-        })
-        .catch((error) => {
-          // Handle errors, e.g., display an error message
-          console.error('Error adding stock:', error);
-        });
-    }
+      // let data = await response.json();
+   }
 </script>
 
 {#if logged_in == true}
@@ -197,16 +184,15 @@
     <br/><br/>
     <div>
       <h2>Update Investment</h2>
-      <form on:submit={handleUpdateInvestment}>
-        <label for="newStockName">Stock Name:</label>
-        <input type="text" id="newStockName" bind:value={newInvestmentName} required />
-    
-        <label for="newStockSymbol">New Investment:</label>
-        <input type="text" id="newStockSymbol" bind:value={newInvestmentSymbol} required />
-    
-        <button type="submit">Submit</button>
+      <form id="upt-stck">
+        <label for="sname">Stock Ticker: </label>
+        <input bind:value={newInvestmentSymbol} type="stockname" id="stockname" name="stockname">
+        <label for="invAmt">Investment Amount:</label>
+        <input bind:value={newInvestmentAmt} type="amtInt" id="amtInv" name="amtInv">
       </form>
+      <button on:click={handleUpdateInvestment}>Submit</button>
     </div>
+
     <br/><br/>
 
     <h2>View Country Economic Trends</h2>

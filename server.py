@@ -110,58 +110,31 @@ def addStockToWatchlist():
                 "message": "Failed to add the stock to the watchlist and save in the database."
             }
 
-# import sqlite3
-# import requests
-# from bs4 import BeautifulSoup
-
-# connection = sqlite3.connect('StockTreeDB.db')
-# c = connection.cursor()
-
-
-#if wanted to update a company record, would type something like this:
-#update_company_record("'Google', 'Sundar Pichai")
-
-# def update_company_record(company_name, ceo_name):
-#     #updates CEO of a specific company
-#     connection = sqlite3.connect('StockTreeDB.db')
-#     c = connection.cursor()
-
-#     updated_query = f"UPDATE COMPANY CEO = {ceo_name} WHERE CompanyName = {c_name}"
-
-#     c.execute(updated_query, (ceo_name, company_name));
-#     connection.commit()
-#     print(f"Updated CEO of {company_name} to {ceo_name}")
-#     connection.close()
-    
-
-# def update_stockholder_name(sh_bank_ac, sh_fname, sh_lname):
-#     connection = sqlite3.connect('StockTreeDB.db')
-#     c = connection.cursor()
-
-#     updated_query = f"UPDATE FIRST NAME = {sh_fname} AND fUPDATE LAST NAME = {sh_lname} WHERE BankAccount = {sh_bank_ac}"
-
-#     c.execute(updated_query, (sh_fname, sh_lname, sh_bank_ac));
-#     connection.commit()
-#     print(f"Updated investment amount of {sh_bank_ac} to {sh_fname} {sh_lname}")
-#     connection.close()
-
 @app.route("/updateInvestment", methods=['POST'])
-def update_investment(sh_bank_ac, sh_amt_invested):
+def update_investment():
     connection = sqlite3.connect('StockTreeDB.db')
     c = connection.cursor()
-
-    updated_query = f"UPDATE INVESTMENT AMOUNT = {sh_amt_invested} WHERE BankAccount = {sh_bank_ac}"
-
+    data = json.loads(request.get_data())
     try:
-        c.execute(updated_query, (sh_amt_invested, sh_bank_ac));
+        r = c.execute(f"SELECT ID FROM ACCOUNTS WHERE Username='{data['username']}'")
+        res = r.fetchall()[0][0]
+        print(f"ret id {res}")
+        print(f"UPDATE OWNS SET Amt_Share={data['amt']} WHERE ID={res} AND SName='{data['name']}'")
+
+        r = c.execute(f"UPDATE OWNS SET Amt_Share={data['amt']} WHERE ID={res} AND SName='{data['name']}'")
     
         connection.commit()
-        print(f"Updated investment amount of {sh_bank_acc} to {sh_amt_invested}")
         connection.close()
+        return {
+            "success": "1"
+        }
     except Exception as e:
         connection.close()
-        print("failed update investment")
+        print("no user id")
         print(e)
+        return {
+            "success": "0"
+        }
 
 
 
