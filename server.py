@@ -176,6 +176,38 @@ def addStockToWatchlist():
                 "message": "Failed to add the stock to the watchlist and save in the database."
             }   
 
+@app.route("/addAnInvestment", methods=['POST'])
+def add_an_investment():
+    connection = sqlite3.connect('StockTreeDB.db')
+    c = connection.cursor()
+    data = json.loads(request.get_data())
+    try:
+        r = c.execute(f"SELECT FMarket FROM STOCK WHERE Name='{data['symbol']}'")
+        mkt = r.fetchall()[0][0]
+        print(f"ret id {mkt}")
+
+        r = c.execute(f"SELECT ID FROM ACCOUNTS WHERE Username='{data['username']}'")
+        ids = r.fetchall()[0][0]
+
+        print(f"INSERT INTO OWNS VALUES ('{data['symbol']}', '{mkt}', {ids}, {data['shares']})")
+
+        r = c.execute(f"INSERT INTO OWNS VALUES ('{data['symbol']}', {ids}, {data['shares']}, '{mkt}')")
+    
+        connection.commit()
+        connection.close()
+        return {
+            "success": "1"
+        }
+    except Exception as e:
+        connection.close()
+        print("no user id")
+        print(e)
+        return {
+            "success": "0"
+        }
+
+
+
 @app.route("/updateInvestment", methods=['POST'])
 def update_investment():
     connection = sqlite3.connect('StockTreeDB.db')
@@ -184,9 +216,6 @@ def update_investment():
     try:
         r = c.execute(f"SELECT ID FROM ACCOUNTS WHERE Username='{data['username']}'")
         res = r.fetchall()[0][0]
-        print(f"ret id {res}")
-        print(f"UPDATE OWNS SET Amt_Share={data['amt']} WHERE ID={res} AND SName='{data['name']}'")
-
         r = c.execute(f"UPDATE OWNS SET Amt_Share={data['amt']} WHERE ID={res} AND SName='{data['name']}'")
     
         connection.commit()
