@@ -1,5 +1,5 @@
 --
--- File generated with SQLiteStudio v3.4.4 on Sun Dec 3 22:16:42 2023
+-- File generated with SQLiteStudio v3.4.4 on Sun Dec 3 23:17:49 2023
 --
 -- Text encoding used: System
 --
@@ -148,7 +148,6 @@ INSERT INTO OWNS (SName, ID, Amt_Share, FMarket) VALUES ('MSFT', 8, 2, 'XNAS');
 INSERT INTO OWNS (SName, ID, Amt_Share, FMarket) VALUES ('GOOGL', 8, 2, 'XNAS');
 INSERT INTO OWNS (SName, ID, Amt_Share, FMarket) VALUES ('AMAT', 8, 2, 'XNAS');
 INSERT INTO OWNS (SName, ID, Amt_Share, FMarket) VALUES ('UBS', 8, 2, 'XNYS');
-INSERT INTO OWNS (SName, ID, Amt_Share, FMarket) VALUES ('DB', 8, 2, 'XNYS');
 INSERT INTO OWNS (SName, ID, Amt_Share, FMarket) VALUES ('NFLX', 8, 2, 'XNAS');
 INSERT INTO OWNS (SName, ID, Amt_Share, FMarket) VALUES ('UNH', 8, 2, 'XNYS');
 INSERT INTO OWNS (SName, ID, Amt_Share, FMarket) VALUES ('TM', 9, 1, 'XNYS');
@@ -164,6 +163,8 @@ INSERT INTO OWNS (SName, ID, Amt_Share, FMarket) VALUES ('SHEL', 18, 65, 'XNYS')
 INSERT INTO OWNS (SName, ID, Amt_Share, FMarket) VALUES ('1398.HK', 19, 47, 'XNYS');
 INSERT INTO OWNS (SName, ID, Amt_Share, FMarket) VALUES ('GOOGL', 20, 1, 'XNAS');
 INSERT INTO OWNS (SName, ID, Amt_Share, FMarket) VALUES ('1398.HK', 8, 24, 'XHKG');
+INSERT INTO OWNS (SName, ID, Amt_Share, FMarket) VALUES ('3988.HK', 8, 2, 'HKSE ');
+INSERT INTO OWNS (SName, ID, Amt_Share, FMarket) VALUES ('DB', 8, 1, 'NYSE ');
 
 -- Table: REGULATORY_BODY
 CREATE TABLE IF NOT EXISTS REGULATORY_BODY (Sectors_required TEXT, Name TEXT UNIQUE, Country_name TEXT REFERENCES COUNTRY (Unemployment_rate) ON DELETE CASCADE ON UPDATE CASCADE, PRIMARY KEY (Name, Country_name));
@@ -209,9 +210,9 @@ INSERT INTO STOCK (Name, Price, Open, Ask, Day_range, Volume, CName, Bid, FMarke
 INSERT INTO STOCK (Name, Price, Open, Ask, Day_range, Volume, CName, Bid, FMarket) VALUES ('CVX', 169.65, 168.7, '169.65 x 1000', '167.51 - 170.16', 2941908, 'Chevron Corporation', '169.62 x 2200', 'XNYS');
 INSERT INTO STOCK (Name, Price, Open, Ask, Day_range, Volume, CName, Bid, FMarket) VALUES ('HSBC', 39.35, 39.17, '39.38 x 1800', '39.01 - 39.41', 1601087, 'HSBC Holdings plc', '39.37 x 1400', 'XNYS');
 INSERT INTO STOCK (Name, Price, Open, Ask, Day_range, Volume, CName, Bid, FMarket) VALUES ('NFLX', 404.61, 404.74, '400.10 x 900', '392.26 - 408.94', 19606720, 'Netflix, Inc.', '399.88 x 1800', 'XNAS');
-INSERT INTO STOCK (Name, Price, Open, Ask, Day_range, Volume, CName, Bid, FMarket) VALUES ('DB', 10.36, 10.25, '10.37 x 3100', '10.25 - 10.39', 2154709, 'Deutsche Bank Aktiengesellschaft', '10.36 x 3100', 'XNYS');
 INSERT INTO STOCK (Name, Price, Open, Ask, Day_range, Volume, CName, Bid, FMarket) VALUES ('UBS', 24.33, 24.16, '24.34 x 4000', '24.11 - 24.40', 1864232, 'UBS Group AG', '24.33 x 3100', 'XNYS');
 INSERT INTO STOCK (Name, Price, Open, Ask, Day_range, Volume, CName, Bid, FMarket) VALUES ('005930.KS', '72,800.00', '72,800.00', '72,700.00 x 0', '72,500.00 - 72,900.00', '3,960,059', 'Samsung', '72,600.00 x 0', 'XKSE');
+INSERT INTO STOCK (Name, Price, Open, Ask, Day_range, Volume, CName, Bid, FMarket) VALUES ('DB', 12.59, 12.42, '14.65 x 3000', '12.42 - 12.60', '2,234,700', 'Deutsche Bank Aktiengesellschaft', '11.00 x 4000', 'NYSE ');
 
 -- Table: STOCKHOLDER
 CREATE TABLE IF NOT EXISTS STOCKHOLDER (FName TEXT NOT NULL, Minit TEXT (1), LName TEXT NOT NULL, Amt_invested NUMERIC (0), ID NUMERIC (9, 0) PRIMARY KEY UNIQUE, Bank_Ac NUMERIC (0) NOT NULL);
