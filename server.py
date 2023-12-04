@@ -105,11 +105,10 @@ def addStockToWatchlist():
     stock_dict['day_range'] = ""
     stock_dict['volume'] = ""
     stock_dict['price'] = ""
-    stock_dict['bid'] = ""
     stock_dict['fmarket'] = ""
     try:
         # Check if the stock already exists in the watchlist
-        print(data['name'])
+        #print(data['name'])
         r = c.execute("SELECT SName FROM OWNS WHERE SName = ?", (stock_dict['symbol'],))
         fetched_stock = r.fetchone()
     except:
@@ -130,9 +129,21 @@ def addStockToWatchlist():
         try:
             headers = {'User-Agent': 'Mozilla/5.0'}
             url = f"https://finance.yahoo.com/quote/{stock_dict['symbol']}"
-            print(f"url {url}")
+            #print(f"url {url}")
             page = requests.get(url, headers=headers)
             soup = BeautifulSoup(page.content, "html.parser")
+
+            span = soup.findAll("span")[16]
+            span = [t.text.strip() for t in span][0]
+            market = span.split("-")[0]
+            stock_dict['fmarket'] = market
+            streamer = soup.findAll("fin-streamer")[18]
+            streamer = [t.text.strip() for t in streamer][0]
+            try:
+                float(streamer)
+                stock_dict['price'] = streamer
+            except ValueError:
+                print("price not valid")
 
             data_table = soup.findAll("table")[0]
             data_table_rows = data_table.find_all("tr")
@@ -156,6 +167,8 @@ def addStockToWatchlist():
                         if key == 'price' or key == 's_open' or key == 'volume' or key == 'shares':
                             stock_dict[key] = 0
             # Insert the new stock into the watchlist table with Name and Price attributes
+            print(stock_dict['fmarket'])
+            print(stock_dict['price'])
             r = c.execute("SELECT Name FROM STOCK WHERE Name = ?", (stock_dict['symbol'],))
             fetched_stock = r.fetchone()
             if not fetched_stock:
