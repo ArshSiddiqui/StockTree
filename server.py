@@ -219,8 +219,14 @@ def add_user():
     # get data from json request
     data =  json.loads(request.get_data())
     # add user to the database
+    print(f"predata {data['account_type']}")
     try:
-        c.execute(f"INSERT INTO ACCOUNTS VALUES ('{data['username']}','{data['password']}','{data['account_type']}')")
+        ids = 0
+        if data['account_type'] == 'stockholder':
+            r = c.execute("SELECT MAX(ID) FROM ACCOUNTS")
+            ids = r.fetchall()[0][0]
+            print(f"ids {ids}")
+        c.execute(f"INSERT INTO ACCOUNTS VALUES ('{data['username']}','{data['password']}','{data['account_type']}', {ids})")
         connection.commit()
         return {
             "success": "1"
@@ -295,9 +301,10 @@ def get_stock():
     c = connection.cursor()
     # get data from json request
     data = json.loads(request.get_data())
+    print("about to get data")
     try:
+        print(f"SELECT * FROM STOCK WHERE CName='{data['company_name']}'")
         r = c.execute(f"SELECT * FROM STOCK WHERE CName='{data['company_name']}'")
-        print(f"r {r}")
         res = r.fetchall()[0]
         # Extract all data
         abbrev, price, openv, ask, day_range, volume, cname, bid, fmarket = res    

@@ -77,6 +77,7 @@
             })
         })
         let data = await response.json();
+        console.log("data2", data);
         name = data['abbreviation'];
         price = data['price'];
         open = data['open'];
@@ -237,7 +238,6 @@
     get_stock();
     get_historical_data(companyName, true);
     get_employee_stats();
-    get_country_details();
 </script>
 
 {#if logged_in == true}
