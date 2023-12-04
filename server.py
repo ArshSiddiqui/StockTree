@@ -423,6 +423,7 @@ def get_new_country():
         gdp_ind = "NY.GDP.MKTP.CD"
         unemp_ind = "SL.UEM.TOTL.ZS"
         infl_ind = "FP.CPI.TOTL.ZG"
+        pop_ind = "SP.POP.TOTL"
         url = "http://api.worldbank.org/v2/country/" + country_code + "/indicator/" + gdp_ind + "?mrv=1&format=json"
         response = requests.get(url, params=param)
         #parse
@@ -438,9 +439,18 @@ def get_new_country():
         #parse
         data = response.json()[1][0]
         infl = data["value"]
-        add_country_to_database(country, gdp, unemp, infl)
+        url = "http://api.worldbank.org/v2/country/" + country_code + "/indicator/" + pop_ind + "?mrv=1&format=json"
+        response = requests.get(url, params=param)
+        #parse
+        data = response.json()[1][0]
+        pop = data["value"]
+        add_country_to_database(country, gdp, unemp, infl, pop)
+        try:
+            gdp_per_cap = gdp / pop
+        except:
+            gdp_per_cap = 0
         return {
-            "name":country, "gdp":gdp, "unemployment_rate":unemp, "inflation_rate":infl 
+            "name":country, "gdp":gdp, "unemployment_rate":unemp, "inflation_rate":infl, "population":pop, "gdp_per_capita":gdp_per_cap 
         }
     except Exception as e:
         print("get new country failed")
@@ -449,7 +459,7 @@ def get_new_country():
             "message":"failed"
         }
 
-def add_country_to_database(country, gdp, unemp, infl):
+def add_country_to_database(country, gdp, unemp, infl, pop):
     #add data to database
     # connect to the database
     
@@ -459,7 +469,7 @@ def add_country_to_database(country, gdp, unemp, infl):
         r = c.execute(f"SELECT Name FROM COUNTRY WHERE Name='{country}'")
         fetched_stock = r.fetchone()
         if fetched_stock is None:
-            r = c.execute(f"INSERT INTO COUNTRY (Name, GDP, Unemployment_rate, Inflation_rate) VALUES ('{country}', '{gdp}', '{unemp}', '{infl}')")
+            r = c.execute(f"INSERT INTO COUNTRY (Name, GDP, Unemployment_rate, Inflation_rate, Population) VALUES ('{country}', '{gdp}', '{unemp}', '{infl}', '{pop}')")
             connection.commit()
             connection.close()
             return {"message":"success"}
