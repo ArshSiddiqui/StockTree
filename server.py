@@ -517,12 +517,18 @@ def fetchName():
     connection = sqlite3.connect('StockTreeDB.db')
     c = connection.cursor()
     # execute a function to select from the database
+    data = json.loads(request.get_data())
     try:
-        r = c.execute("SELECT CName FROM STOCK")
+        r = c.execute(f"SELECT ID FROM ACCOUNTS WHERE Username='{data['username']}'")
+        ret = r.fetchall()[0][0]
+        print(f"SELECT SName, Amt_Share FROM OWNS WHERE ID={ret}")
+        r = c.execute(f"SELECT SName, Amt_Share FROM OWNS WHERE ID={ret}")
         stocks = r.fetchall()
+        print(stocks)
         stock_list = []
         for stock in stocks:
-            stock_list += stock
+            stock_list.append([stock[0], f'{stock[1]}'])
+        print(stock_list)
         stock_json = json.dumps(stock_list)
         return str(stock_json)
     except Exception as e:

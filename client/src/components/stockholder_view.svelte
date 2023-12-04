@@ -66,13 +66,15 @@
   async function getName() {
     let response = await fetch("./fetchName", {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        }});
+        body: JSON.stringify({
+          'username': username,
+        })
+      });
     let nameData = await response.text();
-    console.log(nameData);
-    nameData = nameData.slice(2,-2);
-    allStocks = nameData.split("\", \"");
+    allStocks = JSON.parse(nameData)
+    // nameData = nameData.slice(2,-2);
+    // allStocks = nameData.split("],");
+    // console.log(allStocks);
   }
   getName();
 
@@ -137,7 +139,6 @@
     async function handleUpdateInvestment() {
       // Perform validation and submit the new stock data to the server
       // You can use the fetch API to send a POST request to the server
-      console.log("here!!!");
       let response = await fetch("/updateInvestment", {
             method: "POST",
             body: JSON.stringify({
